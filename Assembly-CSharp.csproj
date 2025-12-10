@@ -61,6 +61,7 @@
     <Analyzer Include="D:\Programming\Unity\6000.0.56f1\Editor\Data\Tools\Unity.SourceGenerators\Unity.UIToolkit.SourceGenerator.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Flashlight.cs" />
     <Compile Include="Assets\Scripts\CameraSwitcher.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
     <Compile Include="Assets\Scripts\CursorLock.cs" />
