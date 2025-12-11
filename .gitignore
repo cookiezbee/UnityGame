@@ -1,7 +1,87 @@
-Library/
-Temp/
-Obj/
-Build/
-Builds/
-Logs/
-UserSettings/
+########################################
+# UNITY
+########################################
+
+[Ll]ibrary/
+[Tt]emp/
+[Oo]bj/
+[Bb]uild/
+[Bb]uilds/
+[Ll]ogs/
+[Mm]emoryCaptures/
+
+# Пользовательские настройки Unity (на каждого разработчика)
+[Uu]ser[Ss]ettings/
+
+# Автогенерация
+*.csproj
+*.unityproj
+*.sln
+*.suo
+*.tmp
+*.user
+*.userprefs
+*.pidb
+*.booproj
+*.svd
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+
+# Адресуемые Assets Cache
+[Aa]ssets/**/Addressables*/**/catalog.json
+[Aa]ssets/**/Addressables*/**/*.hash
+[Aa]ssets/**/Addressables*/**/Settings.json
+
+# Build reports
+*.buildreport
+*.buildlog
+*.log
+
+# Crash Reports
+sysinfo.txt
+
+########################################
+# RIDER / JETBRAINS
+########################################
+
+# Твоё содержимое из .idea/.gitignore
+/shelf/
+/workspace.xml
+/contentModel.xml
+/.idea.End.iml
+/modules.xml
+/projectSettingsUpdater.xml
+/queries/
+dataSources/
+/dataSources.local.xml
+/httpRequests/
+
+# Rider project folder
+.idea/
+
+# Rider user settings
+*.DotSettings.user
+
+########################################
+# VS CODE / VISUAL STUDIO (если есть)
+########################################
+
+.vs/
+.vscode/
+
+########################################
+# ОС / ПРОЧЕЕ
+########################################
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
