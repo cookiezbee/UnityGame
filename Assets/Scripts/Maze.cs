@@ -1,7 +1,7 @@
-public class Maze          //логическое описание лабиринта
+public class Maze         
 {
-    public MazeCell[,] cells;   //массив ячеек
+    public MazeCell[,] cells;  
 
-    public int startX;          //координаты стартовой клетки
+    public int startX;       
     public int startY;
 }

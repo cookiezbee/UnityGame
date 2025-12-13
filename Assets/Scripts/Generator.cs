@@ -1,42 +1,45 @@
-using System.Collections.Generic;   // List, Stack, Queue
+using System.Collections.Generic;
+using UnityEngine;
 
-public class Generator        // генератор лабиринта
+// List, Stack, Queue
+
+public class Generator //
 {
-    int Width = 10;           // размеры лабиринта
+    int Width = 10;           // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     int Height = 10;
 
-    int startX;               // координаты старта
+    int startX; // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
     int startY;
 
-    // 1) ПЕРВЫЙ МЕТОД – recursive backtracker
-    public Maze GenerateMaze(int Width, int Height)   //метод генерации
+    // 1) пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ recursive backtracker
+    public Maze GenerateMaze(int Width, int Height) //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     {
         this.Width = Width;
         this.Height = Height;
 
-        MazeCell[,] cells = new MazeCell[Width, Height];   //создание массива ячеек
+        MazeCell[,] cells = new MazeCell[Width, Height]; //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 
         for (int x = 0; x < cells.GetLength(0); x++)
         {
             for (int y = 0; y < cells.GetLength(1); y++)
             {
-                cells[x, y] = new MazeCell { X = x, Y = y };  //инициализация ячеек лабиринта
+                cells[x, y] = new MazeCell { X = x, Y = y }; //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             }
         }
 
-        //удаляем стены по алгоритму recursive backtracker
+        //пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ recursive backtracker
         removeWalls(cells);
 
-        //добавляем цикличные пути
+        //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
         AddCycles(cells);
 
-        //выбираем старт и считаем расстояния
+        //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         SetStartAndDistances(cells);
 
-        //добавляем выход из лабиринта
+        //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         AddExit(cells);
 
-        Maze maze = new Maze();   //создание лабиринта
+        Maze maze = new Maze(); //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         maze.cells = cells;
         maze.startX = startX;
         maze.startY = startY;
@@ -44,35 +47,35 @@ public class Generator        // генератор лабиринта
         return maze;
     }
 
-    // 2) ВТОРОЙ МЕТОД – алгоритм Олдоса-Бродера
-    public Maze GenerateMazeAldous(int Width, int Height)   //метод генерации
+    // 2) пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+    public Maze GenerateMazeAldous(int Width, int Height) //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     {
         this.Width = Width;
         this.Height = Height;
 
-        MazeCell[,] cells = new MazeCell[Width, Height];   //создание массива ячеек
+        MazeCell[,] cells = new MazeCell[Width, Height]; //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
 
         for (int x = 0; x < cells.GetLength(0); x++)
         {
             for (int y = 0; y < cells.GetLength(1); y++)
             {
-                cells[x, y] = new MazeCell { X = x, Y = y };  //инициализация ячеек лабиринта
+                cells[x, y] = new MazeCell { X = x, Y = y }; //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             }
         }
 
-        //удаляем стены по алгоритму Олдоса-Бродера
+        //пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         removeWallsAldous(cells);
 
-        //добавляем цикличные пути
+        //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
         AddCycles(cells);
 
-        //выбираем старт и считаем расстояния
+        //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         SetStartAndDistances(cells);
 
-        //добавляем выход из лабиринта
+        //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         AddExit(cells);
 
-        Maze maze = new Maze();   //создание лабиринта
+        Maze maze = new Maze(); //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         maze.cells = cells;
         maze.startX = startX;
         maze.startY = startY;
@@ -81,55 +84,54 @@ public class Generator        // генератор лабиринта
     }
 
     //recursive backtracker
-    private void removeWalls(MazeCell[,] maze)    //удаление стен
+    private void removeWalls(MazeCell[,] maze) //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
     {
-        MazeCell current = maze[0, 0];           //стартовая ячейка
+        MazeCell current = maze[0, 0]; //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         current.Visited = true;
 
-        Stack<MazeCell> stack = new Stack<MazeCell>();   //стек посещённых ячеек
+        Stack<MazeCell> stack = new Stack<MazeCell>(); //пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
         stack.Push(current);
 
         do
         {
-            List<MazeCell> unvisitedNeighbours = new List<MazeCell>(); //список не посещённых соседей
+            List<MazeCell> unvisitedNeighbours = new List<MazeCell>(); //пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
             int x = current.X;
             int y = current.Y;
 
-            //добавление непосещённых соседей в список
+            //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
             if (x > 0 && !maze[x - 1, y].Visited) unvisitedNeighbours.Add(maze[x - 1, y]);
             if (y > 0 && !maze[x, y - 1].Visited) unvisitedNeighbours.Add(maze[x, y - 1]);
             if (x < Width - 1 && !maze[x + 1, y].Visited) unvisitedNeighbours.Add(maze[x + 1, y]);
             if (y < Height - 1 && !maze[x, y + 1].Visited) unvisitedNeighbours.Add(maze[x, y + 1]);
 
-            if (unvisitedNeighbours.Count > 0)    //если есть не посещённые соседи
+            if (unvisitedNeighbours.Count > 0) //пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
             {
                 MazeCell chosen = unvisitedNeighbours[
-                    UnityEngine.Random.Range(0, unvisitedNeighbours.Count)
-                ];                                //выбор случайного соседа
+                    Random.Range(0, unvisitedNeighbours.Count)
+                ]; //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 
-                RemoveWall(current, chosen);      //удаление стен между текущей и выбранной ячейками
+                RemoveWall(current, chosen); //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
 
-                chosen.Visited = true;           //отметка о посещении
-                stack.Push(chosen);              //добавление выбранной ячейки в стек
+                chosen.Visited = true; //пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+                stack.Push(chosen); //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅ
 
-                current = chosen;                //переход к выбранной ячейке
+                current = chosen; //пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
             }
             else
             {
-                current = stack.Pop();           //возврат к предыдущей ячейке, если нет непосещённых соседей
+                current = stack.Pop(); //пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             }
-
-        } while (stack.Count > 0);               //до тех пор, пока стек не опустеет
+        } while (stack.Count > 0); //пїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ, пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     }
 
-    //Олдос-Бродер
-    private void removeWallsAldous(MazeCell[,] maze)   //удаление стен
+    //пїЅпїЅпїЅпїЅпїЅ-пїЅпїЅпїЅпїЅпїЅпїЅ
+    private void removeWallsAldous(MazeCell[,] maze) //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
     {
         int width = maze.GetLength(0);
         int height = maze.GetLength(1);
 
-        //на всякий случай сбрасываем флаг посещения
+        //пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         for (int x = 0; x < width; x++)
         {
             for (int y = 0; y < height; y++)
@@ -138,27 +140,27 @@ public class Generator        // генератор лабиринта
             }
         }
 
-        //случайная стартовая ячейка
-        int cx = UnityEngine.Random.Range(0, width);
-        int cy = UnityEngine.Random.Range(0, height);
+        //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+        int cx = Random.Range(0, width);
+        int cy = Random.Range(0, height);
 
         MazeCell current = maze[cx, cy];
         current.Visited = true;
 
-        int visitedCount = 1;           //сколько клеток уже в дереве
-        int total = width * height;     //всего клеток
+        int visitedCount = 1; //пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+        int total = width * height; //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 
-        //пока не посетили все клетки
+        //пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
         while (visitedCount < total)
         {
             int nx = cx;
             int ny = cy;
 
-            //случайно выбираем допустимого соседа (рандомное блуждание)
+            //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ)
             bool found = false;
             while (!found)
             {
-                int dir = UnityEngine.Random.Range(0, 4); //0 - влево, 1 - вправо, 2 - вниз, 3 - вверх
+                int dir = Random.Range(0, 4); //0 - пїЅпїЅпїЅпїЅпїЅ, 1 - пїЅпїЅпїЅпїЅпїЅпїЅ, 2 - пїЅпїЅпїЅпїЅ, 3 - пїЅпїЅпїЅпїЅпїЅ
 
                 if (dir == 0 && cx > 0)
                 {
@@ -184,12 +186,12 @@ public class Generator        // генератор лабиринта
                     ny = cy + 1;
                     found = true;
                 }
-                //если направление ведёт за пределы поля – просто выбираем следующее
+                //пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             }
 
             MazeCell next = maze[nx, ny];
 
-            //если сосед ещё не в дереве – соединяем его с текущим
+            //пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             if (!next.Visited)
             {
                 RemoveWall(current, next);
@@ -197,39 +199,39 @@ public class Generator        // генератор лабиринта
                 visitedCount++;
             }
 
-            //переходим в следующую ячейку (даже если она уже посещена)
+            //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ)
             current = next;
             cx = nx;
             cy = ny;
         }
     }
 
-    //общие методы
-    private void RemoveWall(MazeCell a, MazeCell b)   //удаление стен между смежными ячейками
+    //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+    private void RemoveWall(MazeCell a, MazeCell b) //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
     {
-        //если ячейки в одном столбце (вертикальные соседи)
+        //пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ)
         if (a.X == b.X)
         {
-            if (a.Y > b.Y)      //b ниже a
+            if (a.Y > b.Y) //b пїЅпїЅпїЅпїЅ a
             {
                 a.Bottom = false;
                 b.Up = false;
             }
-            else                //b выше a
+            else //b пїЅпїЅпїЅпїЅ a
             {
                 a.Up = false;
                 b.Bottom = false;
             }
         }
-        //если ячейки в одной строке (горизонтальные соседи)
+        //пїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ (пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ)
         else if (a.Y == b.Y)
         {
-            if (a.X > b.X)      //b левее a
+            if (a.X > b.X) //b пїЅпїЅпїЅпїЅпїЅ a
             {
                 a.Left = false;
                 b.Right = false;
             }
-            else                //b правее a
+            else //b пїЅпїЅпїЅпїЅпїЅпїЅ a
             {
                 a.Right = false;
                 b.Left = false;
@@ -237,41 +239,41 @@ public class Generator        // генератор лабиринта
         }
     }
 
-    private void AddCycles(MazeCell[,] maze)   //дополнительные циклы
+    private void AddCycles(MazeCell[,] maze) //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
     {
         int width = maze.GetLength(0);
         int height = maze.GetLength(1);
 
-        // сколько дополнительных проходов сделать
+        // пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
         int cyclesCount = (width * height) / 5;
         if (cyclesCount < 1) cyclesCount = 1;
 
         for (int i = 0; i < cyclesCount; i++)
         {
-            //случайная ячейка внутри лабиринта
-            int x = UnityEngine.Random.Range(0, width);
-            int y = UnityEngine.Random.Range(0, height);
+            //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ
+            int x = Random.Range(0, width);
+            int y = Random.Range(0, height);
 
-            //случайное направление: 0 - влево, 1 - вправо, 2 - вниз, 3 - вверх
-            int dir = UnityEngine.Random.Range(0, 4);
+            //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ: 0 - пїЅпїЅпїЅпїЅпїЅ, 1 - пїЅпїЅпїЅпїЅпїЅпїЅ, 2 - пїЅпїЅпїЅпїЅ, 3 - пїЅпїЅпїЅпїЅпїЅ
+            int dir = Random.Range(0, 4);
 
             int nx = x;
             int ny = y;
 
-            if (dir == 0) nx = x - 1;        //сосед слева
-            if (dir == 1) nx = x + 1;        //сосед справа
-            if (dir == 2) ny = y - 1;        //сосед снизу
-            if (dir == 3) ny = y + 1;        //сосед сверху
+            if (dir == 0) nx = x - 1; //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+            if (dir == 1) nx = x + 1; //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
+            if (dir == 2) ny = y - 1; //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+            if (dir == 3) ny = y + 1; //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
 
-            //проверяем, что сосед в пределах массива
+            //пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ
             if (nx < 0 || nx >= width || ny < 0 || ny >= height)
                 continue;
 
             MazeCell a = maze[x, y];
             MazeCell b = maze[nx, ny];
 
-            //удаляем стену только если она ещё существует – чтобы реально появлялась новая петля
-            if (nx == x - 1)        //сосед слева
+            //пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
+            if (nx == x - 1) //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
             {
                 if (a.Left && b.Right)
                 {
@@ -279,7 +281,7 @@ public class Generator        // генератор лабиринта
                     b.Right = false;
                 }
             }
-            else if (nx == x + 1)   //сосед справа
+            else if (nx == x + 1) //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
             {
                 if (a.Right && b.Left)
                 {
@@ -287,7 +289,7 @@ public class Generator        // генератор лабиринта
                     b.Left = false;
                 }
             }
-            else if (ny == y - 1)   //сосед снизу
+            else if (ny == y - 1) //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
             {
                 if (a.Bottom && b.Up)
                 {
@@ -295,7 +297,7 @@ public class Generator        // генератор лабиринта
                     b.Up = false;
                 }
             }
-            else if (ny == y + 1)   //сосед сверху
+            else if (ny == y + 1) //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
             {
                 if (a.Up && b.Bottom)
                 {
@@ -311,26 +313,26 @@ public class Generator        // генератор лабиринта
         int width = maze.GetLength(0);
         int height = maze.GetLength(1);
 
-        int side = UnityEngine.Random.Range(0, 4); //0 - левый край, 1 - правый край, 2 - нижний край, 3 - верхний край
+        int side = Random.Range(0, 4); //0 - пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ, 1 - пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ, 2 - пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ, 3 - пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ
 
-        if (side == 0)               
+        if (side == 0)
         {
             startX = 0;
-            startY = UnityEngine.Random.Range(0, height);
+            startY = Random.Range(0, height);
         }
-        else if (side == 1)            
+        else if (side == 1)
         {
             startX = width - 1;
-            startY = UnityEngine.Random.Range(0, height);
+            startY = Random.Range(0, height);
         }
-        else if (side == 2)         
+        else if (side == 2)
         {
-            startX = UnityEngine.Random.Range(0, width);
+            startX = Random.Range(0, width);
             startY = 0;
         }
-        else                          
+        else
         {
-            startX = UnityEngine.Random.Range(0, width);
+            startX = Random.Range(0, width);
             startY = height - 1;
         }
 
@@ -338,19 +340,19 @@ public class Generator        // генератор лабиринта
 
         if (startX == 0)
         {
-            start.Left = false;          
+            start.Left = false;
         }
         else if (startX == width - 1)
         {
-            start.Right = false;        
+            start.Right = false;
         }
         else if (startY == 0)
         {
-            start.Bottom = false;  
+            start.Bottom = false;
         }
         else if (startY == height - 1)
         {
-            start.Up = false;        
+            start.Up = false;
         }
 
         for (int x = 0; x < width; x++)
@@ -363,7 +365,7 @@ public class Generator        // генератор лабиринта
 
         start.Distance = 0;
 
-        //обход в ширину (BFS)
+        //пїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ (BFS)
         Queue<MazeCell> queue = new Queue<MazeCell>();
         queue.Enqueue(start);
 
@@ -374,7 +376,7 @@ public class Generator        // генератор лабиринта
             int y = current.Y;
             int dist = current.Distance;
 
-            //сосед слева
+            //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
             if (!current.Left && x > 0)
             {
                 MazeCell n = maze[x - 1, y];
@@ -385,7 +387,7 @@ public class Generator        // генератор лабиринта
                 }
             }
 
-            //сосед справа
+            //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
             if (!current.Right && x < width - 1)
             {
                 MazeCell n = maze[x + 1, y];
@@ -396,7 +398,7 @@ public class Generator        // генератор лабиринта
                 }
             }
 
-            //сосед снизу
+            //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
             if (!current.Bottom && y > 0)
             {
                 MazeCell n = maze[x, y - 1];
@@ -407,7 +409,7 @@ public class Generator        // генератор лабиринта
                 }
             }
 
-            //сосед сверху
+            //пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ
             if (!current.Up && y < height - 1)
             {
                 MazeCell n = maze[x, y + 1];
@@ -426,8 +428,8 @@ public class Generator        // генератор лабиринта
         int width = maze.GetLength(0);
         int height = maze.GetLength(1);
 
-        MazeCell exitCell = null; 
-        int maxDist = -1;    
+        MazeCell exitCell = null;
+        int maxDist = -1;
 
         for (int x = 0; x < width; x++)
         {
