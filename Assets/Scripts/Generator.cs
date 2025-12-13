@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Generator //
 {
-    int Width = 10;           // ������� ���������
+    int Width = 10; // ������� ���������
     int Height = 10;
 
     int startX; // ���������� ������
@@ -29,42 +29,6 @@ public class Generator //
 
         //������� ����� �� ��������� recursive backtracker
         removeWalls(cells);
-
-        //��������� ��������� ����
-        AddCycles(cells);
-
-        //�������� ����� � ������� ����������
-        SetStartAndDistances(cells);
-
-        //��������� ����� �� ���������
-        AddExit(cells);
-
-        Maze maze = new Maze(); //�������� ���������
-        maze.cells = cells;
-        maze.startX = startX;
-        maze.startY = startY;
-
-        return maze;
-    }
-
-    // 2) ������ ����� � �������� ������-�������
-    public Maze GenerateMazeAldous(int Width, int Height) //����� ���������
-    {
-        this.Width = Width;
-        this.Height = Height;
-
-        MazeCell[,] cells = new MazeCell[Width, Height]; //�������� ������� �����
-
-        for (int x = 0; x < cells.GetLength(0); x++)
-        {
-            for (int y = 0; y < cells.GetLength(1); y++)
-            {
-                cells[x, y] = new MazeCell { X = x, Y = y }; //������������� ����� ���������
-            }
-        }
-
-        //������� ����� �� ��������� ������-�������
-        removeWallsAldous(cells);
 
         //��������� ��������� ����
         AddCycles(cells);
@@ -123,87 +87,6 @@ public class Generator //
                 current = stack.Pop(); //������� � ���������� ������, ���� ��� ������������ �������
             }
         } while (stack.Count > 0); //�� ��� ���, ���� ���� �� ��������
-    }
-
-    //�����-������
-    private void removeWallsAldous(MazeCell[,] maze) //�������� ����
-    {
-        int width = maze.GetLength(0);
-        int height = maze.GetLength(1);
-
-        //�� ������ ������ ���������� ���� ���������
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                maze[x, y].Visited = false;
-            }
-        }
-
-        //��������� ��������� ������
-        int cx = Random.Range(0, width);
-        int cy = Random.Range(0, height);
-
-        MazeCell current = maze[cx, cy];
-        current.Visited = true;
-
-        int visitedCount = 1; //������� ������ ��� � ������
-        int total = width * height; //����� ������
-
-        //���� �� �������� ��� ������
-        while (visitedCount < total)
-        {
-            int nx = cx;
-            int ny = cy;
-
-            //�������� �������� ����������� ������ (��������� ���������)
-            bool found = false;
-            while (!found)
-            {
-                int dir = Random.Range(0, 4); //0 - �����, 1 - ������, 2 - ����, 3 - �����
-
-                if (dir == 0 && cx > 0)
-                {
-                    nx = cx - 1;
-                    ny = cy;
-                    found = true;
-                }
-                else if (dir == 1 && cx < width - 1)
-                {
-                    nx = cx + 1;
-                    ny = cy;
-                    found = true;
-                }
-                else if (dir == 2 && cy > 0)
-                {
-                    nx = cx;
-                    ny = cy - 1;
-                    found = true;
-                }
-                else if (dir == 3 && cy < height - 1)
-                {
-                    nx = cx;
-                    ny = cy + 1;
-                    found = true;
-                }
-                //���� ����������� ���� �� ������� ���� � ������ �������� ���������
-            }
-
-            MazeCell next = maze[nx, ny];
-
-            //���� ����� ��� �� � ������ � ��������� ��� � �������
-            if (!next.Visited)
-            {
-                RemoveWall(current, next);
-                next.Visited = true;
-                visitedCount++;
-            }
-
-            //��������� � ��������� ������ (���� ���� ��� ��� ��������)
-            current = next;
-            cx = nx;
-            cy = ny;
-        }
     }
 
     //����� ������
@@ -337,31 +220,6 @@ public class Generator //
         }
 
         MazeCell start = maze[startX, startY];
-
-        if (startX == 0)
-        {
-            start.Left = false;
-        }
-        else if (startX == width - 1)
-        {
-            start.Right = false;
-        }
-        else if (startY == 0)
-        {
-            start.Bottom = false;
-        }
-        else if (startY == height - 1)
-        {
-            start.Up = false;
-        }
-
-        for (int x = 0; x < width; x++)
-        {
-            for (int y = 0; y < height; y++)
-            {
-                maze[x, y].Distance = -1;
-            }
-        }
 
         start.Distance = 0;
 

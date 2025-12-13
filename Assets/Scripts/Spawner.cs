@@ -1,129 +1,148 @@
 using UnityEngine;
+using UnityEngine.AI;       // РґР»СЏ NavMeshAgent (РµСЃР»Рё РЅСѓР¶РЅРѕ)
+using Unity.AI.Navigation;  // РґР»СЏ NavMeshSurface
 
 public class Spawner : MonoBehaviour
 {
-    public Camera cam;               //ссылка на камеру
-    public GameObject mazeHandler;   //ссылка на объект хранения визуальных ячеек
+    [Header("Р‘Р°Р·РѕРІС‹Рµ СЃСЃС‹Р»РєРё")]
+    public Camera cam;               // СЃСЃС‹Р»РєР° РЅР° РєР°РјРµСЂСѓ
+    public GameObject mazeHandler;   // РѕР±СЉРµРєС‚-РєРѕРЅС‚РµР№РЅРµСЂ РґР»СЏ РІРёР·СѓР°Р»СЊРЅС‹С… СЏС‡РµРµРє (MazeRoot)
 
-    public Cell CellPrefab;          //шаблон ячейки
-    public Vector2 CellSize = new Vector2(1, 1); //размер ячейки
+    [Header("РџСЂРµС„Р°Р±С‹")]
+    public Cell CellPrefab;          // РїСЂРµС„Р°Р± СЏС‡РµР№РєРё
+    public GameObject startPrefab;   // РїСЂРµС„Р°Р± РёРіСЂРѕРєР° (СЂР°РЅСЊС€Рµ Р·РґРµСЃСЊ Р±С‹Р» С€Р°СЂ)
+    public GameObject floorPrefab;   // РџР Р•Р¤РђР‘ Р‘РћР›Р¬РЁРћР“Рћ РџРћР›Рђ (Plane 10x10)
 
-    public int Width = 10;           //размеры лабиринта
-    public int Height = 10;
+    [Header("РџР°СЂР°РјРµС‚СЂС‹ Р»Р°Р±РёСЂРёРЅС‚Р°")]
+    public Vector2 CellSize = new Vector2(1, 1); // СЂР°Р·РјРµСЂ СЏС‡РµР№РєРё РІ РјРёСЂРµ
+    public int Width = 10;           // С€РёСЂРёРЅР° Р»Р°Р±РёСЂРёРЅС‚Р° РІ СЏС‡РµР№РєР°С…
+    public int Height = 10;          // РІС‹СЃРѕС‚Р° Р»Р°Р±РёСЂРёРЅС‚Р° РІ СЏС‡РµР№РєР°С…
 
-    public GameObject startPrefab;   //префаб синего шара (отметка старта)
+    [Header("РќР°РІРёРіР°С†РёСЏ Рё Р·РѕРјР±Рё")]
+    public NavMeshSurface surface;       // NavMeshSurface РЅР° MazeRoot
+    public ZombieSpawner zombieSpawner;  // СЃРєСЂРёРїС‚, РєРѕС‚РѕСЂС‹Р№ СЃРїР°РІРЅРёС‚ Р·РѕРјР±Рё
 
-    // 1) ПЕРВЫЙ СПОСОБ: recursive backtracker
-    public void GenerateMaze()       //вызов метода генерации лабиринта
+    private void Start()
     {
-        //очистка объекта хранения лабиринта
-        foreach (Transform child in mazeHandler.transform)
-        {
-            GameObject.Destroy(child.gameObject);
-        }
-
-        Generator generator = new Generator();                 //создание генератора
-        Maze maze = generator.GenerateMaze(Width, Height);     //ПЕРВЫЙ АЛГОРИТМ
-
-        //создание и размещение визуального представления ячеек лабиринта
-        for (int x = 0; x < maze.cells.GetLength(0); x++)
-        {
-            for (int z = 0; z < maze.cells.GetLength(1); z++)
-            {
-                Vector3 pos = new Vector3(x * CellSize.x, 0, z * CellSize.y);
-
-                Cell c = Instantiate(CellPrefab, pos, Quaternion.identity);
-
-                //удаление стен ячейки в соответствии с логической моделью
-                if (maze.cells[x, z].Left == false)
-                    Destroy(c.Left);
-                if (maze.cells[x, z].Right == false)
-                    Destroy(c.Right);
-                if (maze.cells[x, z].Up == false)
-                    Destroy(c.Up);
-                if (maze.cells[x, z].Bottom == false)
-                    Destroy(c.Bottom);
-
-                //вывод расстояния до стартовой клетки
-                int d = maze.cells[x, z].Distance;
-                c.distance.text = d.ToString();
-
-                //добавление ячейки в объект хранения лабиринта
-                c.transform.parent = mazeHandler.transform;
-
-                //если это стартовая клетка — ставим синий шар
-                if (x == maze.startX && z == maze.startY && startPrefab != null)
-                {
-                    Vector3 ballPos = pos + new Vector3(0, 1f, 0); //чуть приподнять шар
-                    GameObject ball = Instantiate(startPrefab, ballPos, Quaternion.identity);
-                    ball.transform.parent = mazeHandler.transform;
-                }
-            }
-        }
-
-        //установка камеры над лабиринтом
-        cam.transform.position = new Vector3(
-            (Width * CellSize.x) / 2f,
-            Mathf.Max(Width, Height) * 8f,
-            (Height * CellSize.y) / 2f
-        );
-        cam.transform.rotation = Quaternion.Euler(90f, 90f, 0f);
+        GenerateMaze();
     }
 
-    // 2) ВТОРОЙ СПОСОБ: алгоритм Олдоса-Бродера
-    public void GenerateMazeAldous() //вызов генерации по второму алгоритму
+    /// <summary>
+    /// РЎРѕР·РґР°С‘С‚ РѕРґРёРЅ Р±РѕР»СЊС€РѕР№ РїРѕР» РїРѕРґ РІСЃРµРј Р»Р°Р±РёСЂРёРЅС‚РѕРј.
+    /// РќР° РЅС‘Рј Рё Р±СѓРґРµС‚ СЃС‚СЂРѕРёС‚СЊСЃСЏ РµРґРёРЅС‹Р№ NavMesh.
+    /// </summary>
+    private void CreateBigFloor()
     {
-        //очистка объекта хранения лабиринта
-        foreach (Transform child in mazeHandler.transform)
+        if (floorPrefab == null || mazeHandler == null)
+            return;
+
+        // С€РёСЂРёРЅР°/РІС‹СЃРѕС‚Р° Р»Р°Р±РёСЂРёРЅС‚Р° РІ РјРёСЂРѕРІС‹С… РєРѕРѕСЂРґРёРЅР°С‚Р°С…
+        float worldW = Width * CellSize.x;
+        float worldH = Height * CellSize.y;
+
+        // СЃРѕР·РґР°С‘Рј РїРѕР» РєР°Рє СЂРµР±С‘РЅРєР° MazeRoot
+        GameObject floor = Instantiate(floorPrefab, mazeHandler.transform);
+
+        // СЃС‚Р°РЅРґР°СЂС‚РЅС‹Р№ Plane РІ Unity вЂ” 10x10 РїРѕ XZ
+        floor.transform.localScale = new Vector3(worldW / 10f, 1f, worldH / 10f);
+
+        // С†РµРЅС‚СЂ РїРѕРґ Р»Р°Р±РёСЂРёРЅС‚РѕРј (СЏС‡РµР№РєРё РѕС‚ 0вЂ¦Width-1)
+        floor.transform.position = new Vector3(
+            (worldW - CellSize.x) / 2f,
+            0f,
+            (worldH - CellSize.y) / 2f
+        );
+
+        // РїРѕР» РЅСѓР¶РµРЅ С‚РѕР»СЊРєРѕ РґР»СЏ РЅР°РІРјРµС€Р° вЂ” РєРѕР»Р»Р°Р№РґРµСЂ РјРѕР¶РЅРѕ РІС‹РєР»СЋС‡РёС‚СЊ
+        Collider col = floor.GetComponent<Collider>();
+        if (col != null)
+            col.enabled = false;
+    }
+
+    // Р“РµРЅРµСЂР°С†РёСЏ Р»Р°Р±РёСЂРёРЅС‚Р° (Р°Р»РіРѕСЂРёС‚Рј recursive backtracker)
+    public void GenerateMaze()
+    {
+        if (mazeHandler == null)
         {
-            GameObject.Destroy(child.gameObject);
+            Debug.LogError("Spawner: mazeHandler РЅРµ РЅР°Р·РЅР°С‡РµРЅ");
+            return;
         }
 
-        Generator generator = new Generator();                     //создание генератора
-        Maze maze = generator.GenerateMazeAldous(Width, Height);   //ВТОРОЙ АЛГОРИТМ
+        // 1. РЈРґР°Р»СЏРµРј СЃС‚Р°СЂС‹Р№ Р»Р°Р±РёСЂРёРЅС‚ (Рё СЃС‚Р°СЂС‹Р№ РїРѕР», РµСЃР»Рё Р±С‹Р»)
+        foreach (Transform child in mazeHandler.transform)
+        {
+            Destroy(child.gameObject);
+        }
 
-        //создание и размещение визуального представления ячеек лабиринта
+        // 2. РЎРѕР·РґР°С‘Рј РѕРґРёРЅ Р±РѕР»СЊС€РѕР№ РїРѕР» РїРѕРґ Р±СѓРґСѓС‰РёРј Р»Р°Р±РёСЂРёРЅС‚РѕРј
+        CreateBigFloor();
+
+        // 3. Р“РµРЅРµСЂРёСЂСѓРµРј СЃС‚СЂСѓРєС‚СѓСЂСѓ Р»Р°Р±РёСЂРёРЅС‚Р°
+        Generator generator = new Generator();
+        Maze maze = generator.GenerateMaze(Width, Height);
+
+        // 4. РЎРѕР·РґР°С‘Рј РІРёР·СѓР°Р»СЊРЅС‹Рµ СЏС‡РµР№РєРё
         for (int x = 0; x < maze.cells.GetLength(0); x++)
         {
             for (int z = 0; z < maze.cells.GetLength(1); z++)
             {
-                Vector3 pos = new Vector3(x * CellSize.x, 0, z * CellSize.y);
+                Vector3 pos = new Vector3(x * CellSize.x, 0f, z * CellSize.y);
 
+                // СЃРѕР·РґР°С‘Рј СЏС‡РµР№РєСѓ
                 Cell c = Instantiate(CellPrefab, pos, Quaternion.identity);
 
-                //удаление стен ячейки в соответствии с логической моделью
-                if (maze.cells[x, z].Left == false)
+                // СѓРґР°Р»СЏРµРј СЃС‚РµРЅС‹, РµСЃР»Рё РјРµР¶РґСѓ СЏС‡РµР№РєР°РјРё РµСЃС‚СЊ РїСЂРѕС…РѕРґ
+                if (!maze.cells[x, z].Left)
                     Destroy(c.Left);
-                if (maze.cells[x, z].Right == false)
+                if (!maze.cells[x, z].Right)
                     Destroy(c.Right);
-                if (maze.cells[x, z].Up == false)
+                if (!maze.cells[x, z].Up)
                     Destroy(c.Up);
-                if (maze.cells[x, z].Bottom == false)
+                if (!maze.cells[x, z].Bottom)
                     Destroy(c.Bottom);
 
-                //вывод расстояния до стартовой клетки
-                int d = maze.cells[x, z].Distance;
-                c.distance.text = d.ToString();
-
-                //добавление ячейки в объект хранения лабиринта
+                // РєР»Р°РґС‘Рј СЏС‡РµР№РєСѓ РїРѕРґ MazeRoot
                 c.transform.parent = mazeHandler.transform;
 
-                //если это стартовая клетка — ставим синий шар
+                // СЃС‚Р°СЂС‚РѕРІР°СЏ СЏС‡РµР№РєР° вЂ“ С‚СѓРґР° СЃС‚Р°РІРёРј РёРіСЂРѕРєР°
                 if (x == maze.startX && z == maze.startY && startPrefab != null)
                 {
-                    Vector3 ballPos = pos + new Vector3(0, 1f, 0);
-                    GameObject ball = Instantiate(startPrefab, ballPos, Quaternion.identity);
-                    ball.transform.parent = mazeHandler.transform;
+                    Vector3 playerPos = pos + new Vector3(0f, 1f, 0f);
+                    GameObject player = Instantiate(startPrefab, playerPos, Quaternion.identity);
+                    player.transform.parent = mazeHandler.transform; // РјРѕР¶РЅРѕ РїРѕРјРµРЅСЏС‚СЊ РЅР° SpawnedActors
                 }
             }
         }
 
-        //установка камеры над лабиринтом
-        cam.transform.position = new Vector3(
-            (Width * CellSize.x) / 2f,
-            Mathf.Max(Width, Height) * 8f,
-            (Height * CellSize.y) / 2f
-        );
-        cam.transform.rotation = Quaternion.Euler(90f, 90f, 0f);
+        // 5. РљР°РјРµСЂР° СЃРІРµСЂС…Сѓ РЅР° С†РµРЅС‚СЂ Р»Р°Р±РёСЂРёРЅС‚Р°
+        if (cam != null)
+        {
+            cam.transform.position = new Vector3(
+                (Width * CellSize.x) / 2f,
+                Mathf.Max(Width, Height) * 8f,
+                (Height * CellSize.y) / 2f
+            );
+            cam.transform.rotation = Quaternion.Euler(90f, 90f, 0f);
+        }
+
+        // 6. РЎС‚СЂРѕРёРј NavMesh РїРѕ СѓР¶Рµ РіРѕС‚РѕРІРѕРјСѓ Р»Р°Р±РёСЂРёРЅС‚Сѓ + Р±РѕР»СЊС€РѕРјСѓ РїРѕР»Сѓ
+        if (surface != null)
+        {
+            surface.BuildNavMesh();
+        }
+        else
+        {
+            Debug.LogWarning("Spawner: surface (NavMeshSurface) РЅРµ РЅР°Р·РЅР°С‡РµРЅ");
+        }
+
+        // 7. РЎРїР°РІРЅРёРј Р·РѕРјР±Рё РїРѕСЃР»Рµ С‚РѕРіРѕ, РєР°Рє NavMesh РїРѕСЃС‚СЂРѕРµРЅ
+        if (zombieSpawner != null)
+        {
+            zombieSpawner.SpawnZombies();
+        }
+        else
+        {
+            Debug.LogWarning("Spawner: ZombieSpawner РЅРµ РЅР°Р·РЅР°С‡РµРЅ");
+        }
     }
 }

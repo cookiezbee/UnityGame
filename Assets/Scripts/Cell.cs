@@ -1,13 +1,9 @@
 using UnityEngine;
-// using UnityEngine.UI;  
-using TMPro;                   
 
-public class Cell : MonoBehaviour //класс, описывающий ячейку лабиринта
+public class Cell : MonoBehaviour //РєР»Р°СЃСЃ, РѕРїРёСЃС‹РІР°СЋС‰РёР№ СЏС‡РµР№РєСѓ Р»Р°Р±РёСЂРёРЅС‚Р°
 {
-    public GameObject Left;    //наличие левой стены
-    public GameObject Bottom;  //наличие нижней стены
-    public GameObject Up;      //наличие верхней стены
-    public GameObject Right;   //наличие правой стены
-
-    public TMP_Text distance;  //ссылка на текст, находящийся в ячейке
+    public GameObject Left;    //РЅР°Р»РёС‡РёРµ Р»РµРІРѕР№ СЃС‚РµРЅС‹
+    public GameObject Bottom;  //РЅР°Р»РёС‡РёРµ РЅРёР¶РЅРµР№ СЃС‚РµРЅС‹
+    public GameObject Up;      //РЅР°Р»РёС‡РёРµ РІРµСЂС…РЅРµР№ СЃС‚РµРЅС‹
+    public GameObject Right;   //РЅР°Р»РёС‡РёРµ РїСЂР°РІРѕР№ СЃС‚РµРЅС‹
 }
