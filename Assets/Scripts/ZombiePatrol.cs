@@ -31,6 +31,8 @@ public class ZombiePatrol : MonoBehaviour
     private static readonly int SpeedHash = Animator.StringToHash("Speed");
     private static readonly int AttackHash = Animator.StringToHash("Attack");
 
+    private HPScript hpScript;
+
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -40,6 +42,29 @@ public class ZombiePatrol : MonoBehaviour
 
         if (detector == null)
             detector = GetComponent<ZombieDetector>();
+
+        hpScript = GetComponent<HPScript>();
+    }
+
+    private void OnEnable()
+    {
+        if (hpScript != null) hpScript.OnDeath.AddListener(OnDeathHandler);
+    }
+
+    private void OnDisable()
+    {
+        if (hpScript != null) hpScript.OnDeath.RemoveListener(OnDeathHandler);
+    }
+
+    private void OnDeathHandler()
+    {
+        if (agent != null && agent.isActiveAndEnabled && agent.isOnNavMesh)
+        {
+            agent.isStopped = true;
+            agent.ResetPath();
+        }
+
+        this.enabled = false;
     }
 
     private void Start()
@@ -56,7 +81,7 @@ public class ZombiePatrol : MonoBehaviour
 
     private void Update()
     {
-        if (agent == null)
+        if (agent == null || !agent.isActiveAndEnabled || !agent.isOnNavMesh)
             return;
 
         attackTimer += Time.deltaTime;

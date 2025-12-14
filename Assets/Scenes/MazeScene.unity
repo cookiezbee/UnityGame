@@ -148,13 +148,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 09619142e50e79e43bba7ad3f978136e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  cam: {fileID: 330585545}
   mazeHandler: {fileID: 119449262}
   CellPrefab: {fileID: 6655968026093279071, guid: 85344fb065db79346be57ce94b5e733f, type: 3}
+  startPrefab: {fileID: 5999689552510070082, guid: b6b58fa252a84d840b825135ceacfee9, type: 3}
   CellSize: {x: 4, y: 4}
   Width: 10
   Height: 10
-  startPrefab: {fileID: 5999689552510070082, guid: b6b58fa252a84d840b825135ceacfee9, type: 3}
+  surface: {fileID: 0}
+  zombieSpawner: {fileID: 0}
 --- !u!4 &119449264
 Transform:
   m_ObjectHideFlags: 0
@@ -852,7 +853,9 @@ MonoBehaviour:
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
-  m_fontSharedMaterials: []
+  m_fontSharedMaterials:
+  - {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  - {fileID: 0}
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
