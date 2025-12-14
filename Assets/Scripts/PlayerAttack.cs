@@ -5,8 +5,8 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] GameObject pistolModel;
     [SerializeField] GameObject batModel;
 
-    [SerializeField] GunLogic pistolLogic;
-    [SerializeField] GunLogic batLogic;
+    [SerializeField] WeaponLogic pistolLogic;
+    [SerializeField] WeaponLogic batLogic;
 
     [SerializeField] Animator animator;
 
