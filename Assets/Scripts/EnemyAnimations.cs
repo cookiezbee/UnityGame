@@ -14,9 +14,15 @@ public class EnemyAnimations : MonoBehaviour
         agent = GetComponent<NavMeshAgent>();
     }
 
+    public void PlayHit()
+    {
+        if (animator != null) animator.SetTrigger("Hit");
+
+    }
+
     public void PlayDeath()
     {
-        animator.SetTrigger("Death");
+        animator.SetBool("isDead", true);
 
         if (col != null) col.enabled = false;
 
