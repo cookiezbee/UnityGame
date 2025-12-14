@@ -4,7 +4,6 @@ using Unity.AI.Navigation;  // для NavMeshSurface
 public class Spawner : MonoBehaviour
 {
     [Header("Базовые ссылки")]
-    public Camera cam;               // камера сверху
     public GameObject mazeHandler;   // MazeRoot (родитель всех ячеек и пола)
 
     [Header("Префабы")]
@@ -71,17 +70,6 @@ public class Spawner : MonoBehaviour
                     player.transform.parent = mazeHandler.transform;
                 }
             }
-        }
-
-        // 4. Камера над центром лабиринта
-        if (cam != null)
-        {
-            cam.transform.position = new Vector3(
-                (Width * CellSize.x) / 2f,
-                Mathf.Max(Width, Height) * 8f,
-                (Height * CellSize.y) / 2f
-            );
-            cam.transform.rotation = Quaternion.Euler(90f, 90f, 0f);
         }
 
         // 5. Строим NavMesh по большому полу + активным стенам
