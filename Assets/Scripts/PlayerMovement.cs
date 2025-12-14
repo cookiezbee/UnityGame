@@ -22,6 +22,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void LateUpdate()
     {
+        if (!controller.enabled) return;
+
         grounded = controller.isGrounded;
 
         bool isRunning = Input.GetKey(KeyCode.LeftShift);

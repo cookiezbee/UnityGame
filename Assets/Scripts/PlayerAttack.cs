@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 
 public class PlayerAttack : MonoBehaviour
@@ -5,18 +6,15 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] GameObject pistolModel;
     [SerializeField] GameObject batModel;
 
-    [SerializeField] GunLogic pistolLogic;
-    [SerializeField] GunLogic batLogic;
+    [SerializeField] WeaponLogic pistolLogic;
+    [SerializeField] WeaponLogic batLogic;
 
     [SerializeField] Animator animator;
 
     private int currentWeapon = 1;
     private bool isAiming = false;
 
-    void Start()
-    {
-        EquipPistol();
-    }
+    void Start() => EquipPistol();
 
     void Update()
     {

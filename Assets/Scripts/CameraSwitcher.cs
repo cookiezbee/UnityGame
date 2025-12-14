@@ -1,12 +1,23 @@
 using UnityEngine;
-using UnityEngine.InputSystem; // Подключаем Input System
+using UnityEngine.InputSystem;
 
 public class CameraSwitcher : MonoBehaviour
 {
     [SerializeField] GameObject fpsCamera;
     [SerializeField] GameObject tpsCamera;
 
-    void Start() => SetFPS();
+    [SerializeField] GameObject crosshair;
+
+    void Start()
+    {
+        if (crosshair == null)
+        {
+            GameObject foundCrosshair = GameObject.Find("Crosshair");
+            if (foundCrosshair != null) crosshair = foundCrosshair;
+        }
+
+        SetFPS();
+    }
 
     void Update()
     {
@@ -19,11 +30,15 @@ public class CameraSwitcher : MonoBehaviour
     {
         fpsCamera.SetActive(true);
         tpsCamera.SetActive(false);
+
+        if (crosshair != null) crosshair.SetActive(true);
     }
 
     void SetTPS()
     {
         fpsCamera.SetActive(false);
         tpsCamera.SetActive(true);
+
+        if (crosshair != null) crosshair.SetActive(false);
     }
 }
