@@ -972,6 +972,7 @@ GameObject:
   - component: {fileID: 5692125296456470590}
   - component: {fileID: 1733152862321188877}
   - component: {fileID: 4964930284580626922}
+  - component: {fileID: 2251059348907762816}
   m_Layer: 0
   m_Name: Zombie
   m_TagString: Untagged
@@ -1055,6 +1056,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   points: []
   waitTime: 1
+  detector: {fileID: 2251059348907762816}
+  chaseSpeedMultiplier: 1.5
+  repathInterval: 0.2
+  animator: {fileID: 0}
 --- !u!195 &4964930284580626922
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -1077,6 +1082,28 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
+--- !u!114 &2251059348907762816
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7573525331812314213}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab4dd766ded018d4caad4e05ed79a077, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  detectionRadius: 6
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  useLineOfSight: 1
+  eyeHeight: 1.2
+  scanInterval: 0.1
 --- !u!1 &7944498626486633736
 GameObject:
   m_ObjectHideFlags: 0
