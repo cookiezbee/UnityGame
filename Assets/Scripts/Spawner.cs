@@ -1,65 +1,30 @@
 using UnityEngine;
-using UnityEngine.AI;       // для NavMeshAgent (если нужно)
 using Unity.AI.Navigation;  // для NavMeshSurface
 
 public class Spawner : MonoBehaviour
 {
     [Header("Базовые ссылки")]
-    public Camera cam;               // ссылка на камеру
-    public GameObject mazeHandler;   // объект-контейнер для визуальных ячеек (MazeRoot)
+    public Camera cam;               // камера сверху
+    public GameObject mazeHandler;   // MazeRoot (родитель всех ячеек и пола)
 
     [Header("Префабы")]
     public Cell CellPrefab;          // префаб ячейки
-    public GameObject startPrefab;   // префаб игрока (раньше здесь был шар)
-    public GameObject floorPrefab;   // ПРЕФАБ БОЛЬШОГО ПОЛА (Plane 10x10)
+    public GameObject startPrefab;   // префаб игрока
 
     [Header("Параметры лабиринта")]
-    public Vector2 CellSize = new Vector2(1, 1); // размер ячейки в мире
-    public int Width = 10;           // ширина лабиринта в ячейках
-    public int Height = 10;          // высота лабиринта в ячейках
+    public Vector2 CellSize = new Vector2(1, 1);
+    public int Width = 20;
+    public int Height = 20;
 
     [Header("Навигация и зомби")]
     public NavMeshSurface surface;       // NavMeshSurface на MazeRoot
-    public ZombieSpawner zombieSpawner;  // скрипт, который спавнит зомби
+    public ZombieSpawner zombieSpawner;  // спавнер зомби
 
     private void Start()
     {
         GenerateMaze();
     }
 
-    /// <summary>
-    /// Создаёт один большой пол под всем лабиринтом.
-    /// На нём и будет строиться единый NavMesh.
-    /// </summary>
-    private void CreateBigFloor()
-    {
-        if (floorPrefab == null || mazeHandler == null)
-            return;
-
-        // ширина/высота лабиринта в мировых координатах
-        float worldW = Width * CellSize.x;
-        float worldH = Height * CellSize.y;
-
-        // создаём пол как ребёнка MazeRoot
-        GameObject floor = Instantiate(floorPrefab, mazeHandler.transform);
-
-        // стандартный Plane в Unity — 10x10 по XZ
-        floor.transform.localScale = new Vector3(worldW / 10f, 1f, worldH / 10f);
-
-        // центр под лабиринтом (ячейки от 0…Width-1)
-        floor.transform.position = new Vector3(
-            (worldW - CellSize.x) / 2f,
-            0f,
-            (worldH - CellSize.y) / 2f
-        );
-
-        // пол нужен только для навмеша — коллайдер можно выключить
-        Collider col = floor.GetComponent<Collider>();
-        if (col != null)
-            col.enabled = false;
-    }
-
-    // Генерация лабиринта (алгоритм recursive backtracker)
     public void GenerateMaze()
     {
         if (mazeHandler == null)
@@ -68,53 +33,47 @@ public class Spawner : MonoBehaviour
             return;
         }
 
-        // 1. Удаляем старый лабиринт (и старый пол, если был)
+        // 1. Чистим старый лабиринт, но НЕ трогаем большой пол
         foreach (Transform child in mazeHandler.transform)
         {
+            // Предположим, у большого пола тег "BigFloor"
+            if (child.CompareTag("BigFloor"))
+                continue;
+
             Destroy(child.gameObject);
         }
 
-        // 2. Создаём один большой пол под будущим лабиринтом
-        CreateBigFloor();
-
-        // 3. Генерируем структуру лабиринта
+        // 2. Генерируем структуру лабиринта
         Generator generator = new Generator();
         Maze maze = generator.GenerateMaze(Width, Height);
 
-        // 4. Создаём визуальные ячейки
+        // 3. Создаём визуальные ячейки + стены
         for (int x = 0; x < maze.cells.GetLength(0); x++)
         {
             for (int z = 0; z < maze.cells.GetLength(1); z++)
             {
                 Vector3 pos = new Vector3(x * CellSize.x, 0f, z * CellSize.y);
 
-                // создаём ячейку
-                Cell c = Instantiate(CellPrefab, pos, Quaternion.identity);
+                Cell c = Instantiate(CellPrefab, pos, Quaternion.identity, mazeHandler.transform);
 
-                // удаляем стены, если между ячейками есть проход
-                if (!maze.cells[x, z].Left)
-                    Destroy(c.Left);
-                if (!maze.cells[x, z].Right)
-                    Destroy(c.Right);
-                if (!maze.cells[x, z].Up)
-                    Destroy(c.Up);
-                if (!maze.cells[x, z].Bottom)
-                    Destroy(c.Bottom);
+                // ВАЖНО: вместо Destroy — SetActive
+                // Предполагаем, что maze.cells[x,z].Left == true означает "стена есть"
+                c.Left.SetActive(maze.cells[x, z].Left);
+                c.Right.SetActive(maze.cells[x, z].Right);
+                c.Up.SetActive(maze.cells[x, z].Up);
+                c.Bottom.SetActive(maze.cells[x, z].Bottom);
 
-                // кладём ячейку под MazeRoot
-                c.transform.parent = mazeHandler.transform;
-
-                // стартовая ячейка – туда ставим игрока
+                // Стартовая ячейка: спавним игрока
                 if (x == maze.startX && z == maze.startY && startPrefab != null)
                 {
                     Vector3 playerPos = pos + new Vector3(0f, 1f, 0f);
                     GameObject player = Instantiate(startPrefab, playerPos, Quaternion.identity);
-                    player.transform.parent = mazeHandler.transform; // можно поменять на SpawnedActors
+                    player.transform.parent = mazeHandler.transform;
                 }
             }
         }
 
-        // 5. Камера сверху на центр лабиринта
+        // 4. Камера над центром лабиринта
         if (cam != null)
         {
             cam.transform.position = new Vector3(
@@ -125,7 +84,7 @@ public class Spawner : MonoBehaviour
             cam.transform.rotation = Quaternion.Euler(90f, 90f, 0f);
         }
 
-        // 6. Строим NavMesh по уже готовому лабиринту + большому полу
+        // 5. Строим NavMesh по большому полу + активным стенам
         if (surface != null)
         {
             surface.BuildNavMesh();
@@ -135,7 +94,7 @@ public class Spawner : MonoBehaviour
             Debug.LogWarning("Spawner: surface (NavMeshSurface) не назначен");
         }
 
-        // 7. Спавним зомби после того, как NavMesh построен
+        // 6. Спавним зомби после построения навмеша
         if (zombieSpawner != null)
         {
             zombieSpawner.SpawnZombies();

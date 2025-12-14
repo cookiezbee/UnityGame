@@ -1,4 +1,4 @@
-public class MazeCell        //логическое описание одной ячейки
+public class MazeCell        //Р»РѕРіРёС‡РµСЃРєРѕРµ РѕРїРёСЃР°РЅРёРµ РѕРґРЅРѕР№ СЏС‡РµР№РєРё
 {
     public int X;
     public int Y;
@@ -10,5 +10,5 @@ public class MazeCell        //логическое описание одной ячейки
 
     public bool Visited = false;
 
-    public int Distance = -1;   //кратчайшее расстояние от клетки "Старт"
+    public int Distance = -1;   //РєСЂР°С‚С‡Р°Р№С€РµРµ СЂР°СЃСЃС‚РѕСЏРЅРёРµ РѕС‚ РєР»РµС‚РєРё "РЎС‚Р°СЂС‚"
 }
