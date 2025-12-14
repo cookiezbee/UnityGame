@@ -1196,7 +1196,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   points: []
-  waitTime: 1
+  waitTime: 0
   detector: {fileID: 2251059348907762816}
   chaseSpeedMultiplier: 1.5
   repathInterval: 0.2
@@ -1213,7 +1213,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 7573525331812314213}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.5
+  m_Radius: 0.7
   m_Speed: 2
   m_Acceleration: 8
   avoidancePriority: 50

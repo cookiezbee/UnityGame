@@ -12,7 +12,7 @@ public class ZombiePatrol : MonoBehaviour
     [SerializeField][Range(1f, 5f)] private float chaseSpeedMultiplier = 1.5f;
     [SerializeField][Range(0.05f, 2f)] private float repathInterval = 0.2f;
 
-    [Header("Attack (без урона)")]
+    [Header("Attack")]
     [SerializeField][Range(0.5f, 3f)] private float attackDistance = 1.6f;
     [SerializeField][Range(0.2f, 5f)] private float attackCooldown = 1.2f;
     [SerializeField][Range(0f, 20f)] private float rotationSpeed = 10f;
@@ -98,7 +98,7 @@ public class ZombiePatrol : MonoBehaviour
 
             float dist = Vector3.Distance(transform.position, player.position);
 
-            // Если подошли на дистанцию атаки — останавливаемся и атакуем
+            // Если подошли на дистанцию атаки - останавливаемся и атакуем
             if (dist <= attackDistance)
             {
                 agent.isStopped = true;
@@ -129,7 +129,7 @@ public class ZombiePatrol : MonoBehaviour
             repathTimer += Time.deltaTime;
             if (repathTimer >= repathInterval)
             {
-                // чтобы не дёргалось, можно вычислять путь (опционально)
+                // чтобы не дергалось
                 NavMeshPath path = new NavMeshPath();
                 if (agent.CalculatePath(detector.LastPlayerPosition, path) &&
                     path.status == NavMeshPathStatus.PathComplete)
@@ -143,7 +143,7 @@ public class ZombiePatrol : MonoBehaviour
             return;
         }
 
-        // --- Возврат к патрулю ---
+        // Возврат к патрулю
         agent.isStopped = false;
         agent.speed = baseSpeed;
 

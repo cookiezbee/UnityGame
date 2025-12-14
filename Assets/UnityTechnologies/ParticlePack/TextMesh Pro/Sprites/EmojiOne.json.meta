@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: be4a46213ac06d14f820e0a261af68b7
+timeCreated: 1480316860
+licenseType: Store
+TextScriptImporter:
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
+AssetOrigin:
+  serializedVersion: 1
+  productId: 127325
+  packageName: Particle Pack
+  packageVersion: 3.1
+  assetPath: Assets/UnityTechnologies/ParticlePack/TextMesh Pro/Sprites/EmojiOne.json
+  uploadId: 691001

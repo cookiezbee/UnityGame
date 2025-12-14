@@ -38,7 +38,7 @@ public class ZombieDetector : MonoBehaviour
 
             if (hits != null && hits.Length > 0)
             {
-                // Берём первого найденного игрока
+                // Берем первого найденного игрока
                 Transform candidate = hits[0].transform;
 
                 if (!useLineOfSight || HasLineOfSight(candidate))
@@ -59,7 +59,7 @@ public class ZombieDetector : MonoBehaviour
     {
         Vector3 from = transform.position + Vector3.up * eyeHeight;
 
-        // целимся примерно в центр цели (если есть коллайдер — берём его bounds)
+        // целимся примерно в центр цели (если есть коллайдер —-берем его bounds)
         Vector3 to = target.position;
         Collider c = target.GetComponentInChildren<Collider>();
         if (c != null) to = c.bounds.center;
@@ -70,7 +70,7 @@ public class ZombieDetector : MonoBehaviour
 
         dir /= dist;
 
-        // Если между нами и игроком есть препятствие — LOS нет
+        // Если между нами и игроком есть препятствие - LOS нет
         if (Physics.Raycast(from, dir, dist, obstacleLayer))
             return false;
 

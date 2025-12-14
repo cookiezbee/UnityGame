@@ -156,6 +156,8 @@ MonoBehaviour:
   Height: 20
   surface: {fileID: 1273731753}
   zombieSpawner: {fileID: 1760649283}
+  exitDoorPrefab: {fileID: 1502457248708160688, guid: d058cf6969d587f419130ba3c7413ebe, type: 3}
+  exitDoorParent: {fileID: 1543254843721308148, guid: d058cf6969d587f419130ba3c7413ebe, type: 3}
 --- !u!4 &19953014
 Transform:
   m_ObjectHideFlags: 0
@@ -560,55 +562,6 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
---- !u!1 &1020458615
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1020458616}
-  - component: {fileID: 1020458617}
-  m_Layer: 0
-  m_Name: GameManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1020458616
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1020458615}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 505.45734, y: -199.0671, z: -366.24652}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1020458617
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1020458615}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c57344ea3d23ce749b6c2a788d570eee, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  npcTotal: 0
-  npcTalked: 0
-  exitUnlocked: 0
-  isGameOver: 0
-  isWin: 0
 --- !u!1 &1233549554
 GameObject:
   m_ObjectHideFlags: 0
@@ -907,6 +860,8 @@ MonoBehaviour:
   zombiePrefab: {fileID: 7573525331812314213, guid: f744cd1f4ab74ba47add5f43cbc16c02, type: 3}
   mazeRoot: {fileID: 1273731751}
   zombiesRoot: {fileID: 245750849}
+  spawnByCycles: 1
+  cyclesContainerName: CyclesRoot
   zombieCount: 15
   patrolRadius: 6
   patrolPointsPerZombie: 6
@@ -965,7 +920,6 @@ SceneRoots:
   m_Roots:
   - {fileID: 439340237}
   - {fileID: 613796320}
-  - {fileID: 1020458616}
   - {fileID: 2094087700}
   - {fileID: 1760649284}
   - {fileID: 1273731752}

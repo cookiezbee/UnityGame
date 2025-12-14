@@ -1,120 +1,116 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-// List, Stack, Queue
-
-public class Generator //
+public class Generator
 {
-    int Width = 10; // ������� ���������
+    int Width = 10; 
     int Height = 10;
 
-    int startX; // ���������� ������
+    int startX;
     int startY;
-
-    // 1) ������ ����� � recursive backtracker
-    public Maze GenerateMaze(int Width, int Height) //����� ���������
+    
+    private List<List<MazeCell>> cycles = new List<List<MazeCell>>();
+    
+    public Maze GenerateMaze(int Width, int Height) 
     {
         this.Width = Width;
         this.Height = Height;
+        
+        cycles.Clear();
 
-        MazeCell[,] cells = new MazeCell[Width, Height]; //�������� ������� �����
+        MazeCell[,] cells = new MazeCell[Width, Height];
 
         for (int x = 0; x < cells.GetLength(0); x++)
         {
             for (int y = 0; y < cells.GetLength(1); y++)
             {
-                cells[x, y] = new MazeCell { X = x, Y = y }; //������������� ����� ���������
+                cells[x, y] = new MazeCell { X = x, Y = y };
             }
         }
 
-        //������� ����� �� ��������� recursive backtracker
+        //recursive backtracker
         removeWalls(cells);
-
-        //��������� ��������� ����
+        
+        // добавляем циклы и запоминаем маршруты циклов
         AddCycles(cells);
-
-        //�������� ����� � ������� ����������
+        
         SetStartAndDistances(cells);
-
-        //��������� ����� �� ���������
+        
         AddExit(cells);
 
-        Maze maze = new Maze(); //�������� ���������
+        Maze maze = new Maze();
         maze.cells = cells;
         maze.startX = startX;
         maze.startY = startY;
+        maze.cycles = cycles;
 
         return maze;
     }
 
     //recursive backtracker
-    private void removeWalls(MazeCell[,] maze) //�������� ����
+    private void removeWalls(MazeCell[,] maze) 
     {
-        MazeCell current = maze[0, 0]; //��������� ������
+        MazeCell current = maze[0, 0]; 
         current.Visited = true;
 
-        Stack<MazeCell> stack = new Stack<MazeCell>(); //���� ���������� �����
+        Stack<MazeCell> stack = new Stack<MazeCell>(); 
         stack.Push(current);
 
         do
         {
-            List<MazeCell> unvisitedNeighbours = new List<MazeCell>(); //������ �� ���������� �������
+            List<MazeCell> unvisitedNeighbours = new List<MazeCell>(); 
 
             int x = current.X;
             int y = current.Y;
-
-            //���������� ������������ ������� � ������
+            
             if (x > 0 && !maze[x - 1, y].Visited) unvisitedNeighbours.Add(maze[x - 1, y]);
             if (y > 0 && !maze[x, y - 1].Visited) unvisitedNeighbours.Add(maze[x, y - 1]);
             if (x < Width - 1 && !maze[x + 1, y].Visited) unvisitedNeighbours.Add(maze[x + 1, y]);
             if (y < Height - 1 && !maze[x, y + 1].Visited) unvisitedNeighbours.Add(maze[x, y + 1]);
 
-            if (unvisitedNeighbours.Count > 0) //���� ���� �� ���������� ������
+            if (unvisitedNeighbours.Count > 0) 
             {
                 MazeCell chosen = unvisitedNeighbours[
                     Random.Range(0, unvisitedNeighbours.Count)
-                ]; //����� ���������� ������
+                ]; 
 
-                RemoveWall(current, chosen); //�������� ���� ����� ������� � ��������� ��������
+                RemoveWall(current, chosen);
 
-                chosen.Visited = true; //������� � ���������
-                stack.Push(chosen); //���������� ��������� ������ � ����
+                chosen.Visited = true; 
+                stack.Push(chosen);
 
-                current = chosen; //������� � ��������� ������
+                current = chosen; 
             }
             else
             {
-                current = stack.Pop(); //������� � ���������� ������, ���� ��� ������������ �������
+                current = stack.Pop(); 
             }
-        } while (stack.Count > 0); //�� ��� ���, ���� ���� �� ��������
+        } while (stack.Count > 0); 
     }
-
-    //����� ������
-    private void RemoveWall(MazeCell a, MazeCell b) //�������� ���� ����� �������� ��������
+    
+    private void RemoveWall(MazeCell a, MazeCell b)
     {
-        //���� ������ � ����� ������� (������������ ������)
         if (a.X == b.X)
         {
-            if (a.Y > b.Y) //b ���� a
+            if (a.Y > b.Y) 
             {
                 a.Bottom = false;
                 b.Up = false;
             }
-            else //b ���� a
+            else 
             {
                 a.Up = false;
                 b.Bottom = false;
             }
         }
-        //���� ������ � ����� ������ (�������������� ������)
         else if (a.Y == b.Y)
         {
-            if (a.X > b.X) //b ����� a
+            if (a.X > b.X)
             {
                 a.Left = false;
                 b.Right = false;
             }
-            else //b ������ a
+            else
             {
                 a.Right = false;
                 b.Left = false;
@@ -122,73 +118,153 @@ public class Generator //
         }
     }
 
-    private void AddCycles(MazeCell[,] maze) //�������������� �����
+    // Создаём дополнительные проходы, но теперь каждый проход превращаем в маршрут цикла
+    private void AddCycles(MazeCell[,] maze)
     {
         int width = maze.GetLength(0);
         int height = maze.GetLength(1);
-
-        // ������� �������������� �������� �������
+        
         int cyclesCount = (width * height) / 5;
         if (cyclesCount < 1) cyclesCount = 1;
 
         for (int i = 0; i < cyclesCount; i++)
         {
-            //��������� ������ ������ ���������
             int x = Random.Range(0, width);
             int y = Random.Range(0, height);
-
-            //��������� �����������: 0 - �����, 1 - ������, 2 - ����, 3 - �����
+            
             int dir = Random.Range(0, 4);
 
             int nx = x;
             int ny = y;
 
-            if (dir == 0) nx = x - 1; //����� �����
-            if (dir == 1) nx = x + 1; //����� ������
-            if (dir == 2) ny = y - 1; //����� �����
-            if (dir == 3) ny = y + 1; //����� ������
-
-            //���������, ��� ����� � �������� �������
+            if (dir == 0) nx = x - 1;
+            if (dir == 1) nx = x + 1; 
+            if (dir == 2) ny = y - 1; 
+            if (dir == 3) ny = y + 1;
+            
             if (nx < 0 || nx >= width || ny < 0 || ny >= height)
                 continue;
 
             MazeCell a = maze[x, y];
             MazeCell b = maze[nx, ny];
+ 
+            // Если между ними уже есть проход - это не даст нового цикла, пропускаем
+            if (HasOpenPassage(a, b))
+                continue;
 
-            //������� ����� ������ ���� ��� ��� ���������� � ����� ������� ���������� ����� �����
-            if (nx == x - 1) //����� �����
+            // В идеальном лабиринте путь между a и b всегда существует (через другие клетки)
+            // Находим путь в текущем лабиринте (до открытия новой стенки)
+            List<MazeCell> path = FindPath(maze, a, b);
+
+            if (path == null || path.Count < 2)
+                continue;
+
+            // Открываем стену между a и b (создаем цикл)
+            OpenWallBetween(a, b);
+
+            // Запоминаем маршрут цикла: a..b, а замыкание будет через новый проход b->a
+            cycles.Add(path);
+        }
+    }
+
+    private bool HasOpenPassage(MazeCell a, MazeCell b)
+    {
+        if (a.X == b.X)
+        {
+            if (a.Y == b.Y + 1) return !a.Bottom && !b.Up;
+            if (a.Y + 1 == b.Y) return !a.Up && !b.Bottom;
+        }
+        else if (a.Y == b.Y)
+        {
+            if (a.X == b.X + 1) return !a.Left && !b.Right;
+            if (a.X + 1 == b.X) return !a.Right && !b.Left;
+        }
+
+        return false;
+    }
+
+    private void OpenWallBetween(MazeCell a, MazeCell b)
+    {
+        if (a.X == b.X)
+        {
+            if (a.Y == b.Y + 1)
             {
-                if (a.Left && b.Right)
-                {
-                    a.Left = false;
-                    b.Right = false;
-                }
+                a.Bottom = false;
+                b.Up = false;
             }
-            else if (nx == x + 1) //����� ������
+            else if (a.Y + 1 == b.Y)
             {
-                if (a.Right && b.Left)
-                {
-                    a.Right = false;
-                    b.Left = false;
-                }
-            }
-            else if (ny == y - 1) //����� �����
-            {
-                if (a.Bottom && b.Up)
-                {
-                    a.Bottom = false;
-                    b.Up = false;
-                }
-            }
-            else if (ny == y + 1) //����� ������
-            {
-                if (a.Up && b.Bottom)
-                {
-                    a.Up = false;
-                    b.Bottom = false;
-                }
+                a.Up = false;
+                b.Bottom = false;
             }
         }
+        else if (a.Y == b.Y)
+        {
+            if (a.X == b.X + 1)
+            {
+                a.Left = false;
+                b.Right = false;
+            }
+            else if (a.X + 1 == b.X)
+            {
+                a.Right = false;
+                b.Left = false;
+            }
+        }
+    }
+
+    private List<MazeCell> FindPath(MazeCell[,] maze, MazeCell start, MazeCell goal)
+    {
+        Queue<MazeCell> q = new Queue<MazeCell>();
+        Dictionary<MazeCell, MazeCell> prev = new Dictionary<MazeCell, MazeCell>();
+
+        q.Enqueue(start);
+        prev[start] = null;
+
+        while (q.Count > 0)
+        {
+            MazeCell cur = q.Dequeue();
+            if (cur == goal)
+                break;
+
+            foreach (MazeCell n in GetOpenNeighbors(maze, cur))
+            {
+                if (prev.ContainsKey(n))
+                    continue;
+
+                prev[n] = cur;
+                q.Enqueue(n);
+            }
+        }
+
+        if (!prev.ContainsKey(goal))
+            return null;
+
+        List<MazeCell> path = new List<MazeCell>();
+        MazeCell p = goal;
+
+        while (p != null)
+        {
+            path.Add(p);
+            p = prev[p];
+        }
+
+        path.Reverse();
+        return path;
+    }
+
+    private IEnumerable<MazeCell> GetOpenNeighbors(MazeCell[,] maze, MazeCell c)
+    {
+        int width = maze.GetLength(0);
+        int height = maze.GetLength(1);
+
+        int x = c.X;
+        int y = c.Y;
+
+        if (!c.Left && x > 0) yield return maze[x - 1, y];
+        if (!c.Right && x < width - 1) yield return maze[x + 1, y];
+        if (!c.Bottom && y > 0) yield return maze[x, y - 1];
+        if (!c.Up && y < height - 1) yield return maze[x, y + 1];
     }
 
     private void SetStartAndDistances(MazeCell[,] maze)
@@ -196,7 +272,7 @@ public class Generator //
         int width = maze.GetLength(0);
         int height = maze.GetLength(1);
 
-        int side = Random.Range(0, 4); //0 - ����� ����, 1 - ������ ����, 2 - ������ ����, 3 - ������� ����
+        int side = Random.Range(0, 4);
 
         if (side == 0)
         {
@@ -223,7 +299,7 @@ public class Generator //
 
         start.Distance = 0;
 
-        //����� � ������ (BFS)
+        //(BFS)
         Queue<MazeCell> queue = new Queue<MazeCell>();
         queue.Enqueue(start);
 
@@ -233,8 +309,7 @@ public class Generator //
             int x = current.X;
             int y = current.Y;
             int dist = current.Distance;
-
-            //����� �����
+            
             if (!current.Left && x > 0)
             {
                 MazeCell n = maze[x - 1, y];
@@ -244,8 +319,7 @@ public class Generator //
                     queue.Enqueue(n);
                 }
             }
-
-            //����� ������
+            
             if (!current.Right && x < width - 1)
             {
                 MazeCell n = maze[x + 1, y];
@@ -255,8 +329,7 @@ public class Generator //
                     queue.Enqueue(n);
                 }
             }
-
-            //����� �����
+            
             if (!current.Bottom && y > 0)
             {
                 MazeCell n = maze[x, y - 1];
@@ -266,8 +339,7 @@ public class Generator //
                     queue.Enqueue(n);
                 }
             }
-
-            //����� ������
+            
             if (!current.Up && y < height - 1)
             {
                 MazeCell n = maze[x, y + 1];

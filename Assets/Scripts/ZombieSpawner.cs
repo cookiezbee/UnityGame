@@ -1,22 +1,25 @@
 using UnityEngine;
-using UnityEngine.AI;   // ОБЯЗАТЕЛЬНО
+using UnityEngine.AI;
 using System.Collections.Generic;
 
 public class ZombieSpawner : MonoBehaviour
 {
     [Header("Ссылки")]
-    public GameObject zombiePrefab;   // префаб зомби
-    public GameObject mazeRoot;       // MazeRoot – родитель всех Cell
-    public Transform zombiesRoot;     // контейнер для зомби (SpawnedActors)
+    public GameObject zombiePrefab;
+    public GameObject mazeRoot;
+    public Transform zombiesRoot;
 
-    [Header("Параметры спавна")]
-    public int zombieCount = 5;       // сколько зомби создать
+    [Header("Режим спавна")]
+    public bool spawnByCycles = true;
+    public string cyclesContainerName = "CyclesRoot"; // родитель циклов под MazeRoot
 
-    [Header("Патруль")]
-    public float patrolRadius = 4f;       // радиус патруля вокруг базовой клетки
-    public int patrolPointsPerZombie = 5; // сколько точек в маршруте
+    [Header("Параметры спавна (fallback)")]
+    public int zombieCount = 5;
 
-    // вызывается после генерации лабиринта (из Spawner)
+    [Header("Патруль (fallback)")]
+    public float patrolRadius = 4f;
+    public int patrolPointsPerZombie = 5;
+
     public void SpawnZombies()
     {
         if (zombiePrefab == null || mazeRoot == null)
@@ -25,7 +28,56 @@ public class ZombieSpawner : MonoBehaviour
             return;
         }
 
-        // находим все клетки
+        if (spawnByCycles && TrySpawnByCycles())
+            return;
+        
+        SpawnRandomPatrol();
+    }
+
+    private bool TrySpawnByCycles()
+    {
+        Transform cyclesRoot = mazeRoot.transform.Find(cyclesContainerName);
+        if (cyclesRoot == null)
+        {
+            Debug.LogWarning("ZombieSpawner: cyclesRoot не найден, использую fallback");
+            return false;
+        }
+
+        int cyclesCount = 0;
+
+        foreach (Transform cycle in cyclesRoot)
+        {
+            List<Transform> points = new List<Transform>();
+
+            foreach (Transform p in cycle)
+                points.Add(p);
+
+            if (points.Count < 2)
+                continue;
+
+            cyclesCount++;
+
+            GameObject zombie = Instantiate(
+                zombiePrefab,
+                points[0].position + Vector3.up * 0.1f,
+                Quaternion.identity
+            );
+
+            if (zombiesRoot != null)
+                zombie.transform.parent = zombiesRoot;
+
+            ZombiePatrol patrol = zombie.GetComponent<ZombiePatrol>();
+            if (patrol != null)
+                patrol.points = points.ToArray();
+        }
+
+        Debug.Log($"ZombieSpawner: заспавнено {cyclesCount} зомби по циклам");
+
+        return cyclesCount > 0;
+    }
+
+    private void SpawnRandomPatrol()
+    {
         Cell[] cells = mazeRoot.GetComponentsInChildren<Cell>();
         if (cells.Length == 0)
         {
@@ -33,33 +85,21 @@ public class ZombieSpawner : MonoBehaviour
             return;
         }
 
-        Debug.Log($"ZombieSpawner: найдено {cells.Length} клеток");
-
         for (int i = 0; i < zombieCount; i++)
         {
-            // берём случайную клетку как базу патруля
             Cell baseCell = cells[Random.Range(0, cells.Length)];
             Vector3 basePos = baseCell.transform.position;
 
-            // создаём зомби
-            GameObject zombie = Instantiate(
-                zombiePrefab,
-                basePos + Vector3.up * 0.1f,
-                Quaternion.identity
-            );
+            GameObject zombie = Instantiate(zombiePrefab, basePos + Vector3.up * 0.1f, Quaternion.identity);
 
             if (zombiesRoot != null)
                 zombie.transform.parent = zombiesRoot;
 
-            // создаём точки патруля вокруг этой клетки
             Transform[] patrolPoints = CreatePatrolPoints(basePos);
 
-            // передаём точки в скрипт патруля
             ZombiePatrol patrol = zombie.GetComponent<ZombiePatrol>();
             if (patrol != null)
-            {
                 patrol.points = patrolPoints;
-            }
         }
     }
 
@@ -71,26 +111,16 @@ public class ZombieSpawner : MonoBehaviour
         {
             GameObject pointObj = new GameObject("ZombiePoint");
 
-            // случайное смещение вокруг базовой клетки
             Vector2 offset2D = Random.insideUnitCircle * patrolRadius;
             Vector3 targetPos = basePos + new Vector3(offset2D.x, 0f, offset2D.y);
 
-            // ПРИЛИПАЕМ к ближайшей точке на NavMesh
             NavMeshHit hit;
             if (NavMesh.SamplePosition(targetPos, out hit, patrolRadius * 2f, NavMesh.AllAreas))
-            {
                 pointObj.transform.position = hit.position;
-            }
             else
-            {
-                // на всякий случай — центр клетки
                 pointObj.transform.position = basePos;
-            }
 
-            pointObj.transform.parent = zombiesRoot != null
-                ? zombiesRoot
-                : mazeRoot.transform;
-
+            pointObj.transform.parent = zombiesRoot != null ? zombiesRoot : mazeRoot.transform;
             result[i] = pointObj.transform;
         }
 
