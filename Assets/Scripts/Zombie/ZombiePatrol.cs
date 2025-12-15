@@ -14,7 +14,7 @@ public class ZombiePatrol : MonoBehaviour
 
     [Header("Attack")]
     [SerializeField][Range(0.5f, 3f)] private float attackDistance = 1.6f;
-    [SerializeField][Range(0.2f, 5f)] private float attackCooldown = 1.2f;
+    [SerializeField][Range(0.2f, 5f)] private float attackCooldown = 2f;
     [SerializeField][Range(0f, 20f)] private float rotationSpeed = 10f;
     [SerializeField][Range(1, 100)] private int attackDamage = 10;
 
@@ -78,6 +78,8 @@ public class ZombiePatrol : MonoBehaviour
             currentIndex = 0;
             agent.SetDestination(points[currentIndex].position);
         }
+
+        attackTimer = attackCooldown;
     }
 
     private void Update()
@@ -114,13 +116,11 @@ public class ZombiePatrol : MonoBehaviour
                     transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, rotationSpeed * Time.deltaTime);
                 }
 
-                if (animator != null && attackTimer >= attackCooldown)
+                if (attackTimer >= attackCooldown)
                 {
-                    animator.SetTrigger(AttackHash);
+                    if (animator != null) animator.SetTrigger(AttackHash);
 
-                    HPScript playerHp = player.GetComponentInParent<HPScript>();
-                    if (playerHp != null) playerHp.TakeDamage(attackDamage);
-
+                    // Сбрасываем таймер. Урон нанесется ЧЕРЕЗ Animation Event
                     attackTimer = 0f;
                 }
 
@@ -168,6 +168,19 @@ public class ZombiePatrol : MonoBehaviour
                 agent.SetDestination(points[currentIndex].position);
                 waitTimer = 0f;
             }
+        }
+    }
+
+    public void DealDamageFromAnimationEvent()
+    {
+        if (detector == null || detector.PlayerTransform == null) return;
+
+        float dist = Vector3.Distance(transform.position, detector.PlayerTransform.position);
+
+        if (dist <= attackDistance + 0.5f)
+        {
+            HPScript playerHp = detector.PlayerTransform.GetComponentInParent<HPScript>();
+            if (playerHp != null) playerHp.TakeDamage(attackDamage);
         }
     }
 }

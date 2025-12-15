@@ -40,8 +40,20 @@ public class WeaponLogic : MonoBehaviour
         }
     }
 
+    public void AddAmmo(int amount)
+    {
+        if (type != WeaponType.Gun) return;
+
+        currentAmmo += amount;
+        maxAmmo += amount;
+
+        UpdateAmmoUI();
+    }
+
     public void shot()
     {
+        if (DialogueController.IsDialogueActive) return;
+
         if (isAttacking) return;
 
         if (type == WeaponType.Gun)

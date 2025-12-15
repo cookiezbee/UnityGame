@@ -66,6 +66,8 @@ public class PlayerAttack : MonoBehaviour
 
     void PerformAttack()
     {
+        if (DialogueController.IsDialogueActive) return;
+
         animator.SetTrigger("Attack");
 
         if (currentWeapon == 1) pistolLogic.shot();

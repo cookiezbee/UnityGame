@@ -17,8 +17,6 @@ public class Flashlight : MonoBehaviour
         bool newState = !flashlightSource.enabled;
         flashlightSource.enabled = newState;
 
-        Debug.Log($"Flashlight toggled: {newState}");
-
         if (zombieDetectors == null || zombieDetectors.Length == 0)
             zombieDetectors = FindObjectsOfType<ZombieDetector>();
 

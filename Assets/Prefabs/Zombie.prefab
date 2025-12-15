@@ -1203,7 +1203,8 @@ MonoBehaviour:
   attackDistance: 1.6
   attackCooldown: 1.2
   rotationSpeed: 10
-  animator: {fileID: 0}
+  attackDamage: 10
+  animator: {fileID: 1680820291805594861}
 --- !u!195 &4964930284580626922
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -1248,6 +1249,7 @@ MonoBehaviour:
   useLineOfSight: 1
   eyeHeight: 1.2
   scanInterval: 0.1
+  flashlightRadiusMultiplier: 2
 --- !u!114 &7452455057894856957
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1344,6 +1346,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fb6ec9121a8d8846b0e3288269b0606, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ammoPrefab: {fileID: 6601158696668983627, guid: 783c1d003c909c4449e30d5d219f4291, type: 3}
+  dropChance: 0.3
 --- !u!114 &4817079601020935881
 MonoBehaviour:
   m_ObjectHideFlags: 0

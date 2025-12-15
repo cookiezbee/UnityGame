@@ -29,6 +29,8 @@ public class Spawner : MonoBehaviour
 
     public void GenerateMaze()
     {
+        if (mazeHandler == null) return;
+
         // чистим старый лабиринт, но не трогаем большой пол
         foreach (Transform child in mazeHandler.transform)
         {
@@ -143,6 +145,16 @@ public class Spawner : MonoBehaviour
         else
         {
             Debug.LogWarning("Spawner: ZombieSpawner не назначен");
+        }
+
+        NPCSpawner npcSpawner = FindFirstObjectByType<NPCSpawner>();
+        if (npcSpawner != null)
+        {
+            npcSpawner.SpawnNPCs();
+        }
+        else
+        {
+            Debug.LogWarning("Spawner: NPCSpawner не найден на сцене!");
         }
     }
 }
