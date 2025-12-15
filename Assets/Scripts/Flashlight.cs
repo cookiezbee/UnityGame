@@ -1,8 +1,9 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class Flashlight : MonoBehaviour
 {
+    [SerializeField] private ZombieDetector[] zombieDetectors;
+
     [SerializeField] Light flashlightSource;
     [SerializeField] AudioSource switchSound;
 
@@ -15,6 +16,14 @@ public class Flashlight : MonoBehaviour
     {
         bool newState = !flashlightSource.enabled;
         flashlightSource.enabled = newState;
+
+        Debug.Log($"Flashlight toggled: {newState}");
+
+        if (zombieDetectors == null || zombieDetectors.Length == 0)
+            zombieDetectors = FindObjectsOfType<ZombieDetector>();
+
+        foreach (var detector in zombieDetectors)
+            detector.SetFlashlightState(newState);
 
         if (switchSound != null) switchSound.Play();
     }

@@ -9,8 +9,13 @@ public class DeathAnimationPlayer : MonoBehaviour
     CanvasGroup blackScreenGroup;
     GameObject gameOverButtons;
 
+    private GameObject crosshair;
+    private GameObject ammoText;
+    
     [SerializeField] float fadeDuration = 2.0f;
-
+    
+    private bool isDeathPlayed = false;
+    
     void Start()
     {
         GameObject panelObj = GameObject.Find("DeathPanel");
@@ -28,21 +33,44 @@ public class DeathAnimationPlayer : MonoBehaviour
 
         gameOverButtons = GameObject.Find("GameOverButtons");
         if (gameOverButtons != null) gameOverButtons.SetActive(false);
+        
+        // Crosshair
+        crosshair = GameObject.Find("Crosshair");
+        if (crosshair != null)
+            crosshair.SetActive(true);
+        
+        ammoText = GameObject.Find("AmmoText");
+        if (ammoText != null)
+            ammoText.SetActive(true);
     }
 
     public void PlayDeath()
     {
+        if (isDeathPlayed) return;
+        isDeathPlayed = true;
+        
         if (animator != null) animator.SetTrigger("Death");
 
         UnityEngine.InputSystem.PlayerInput input = GetComponent<UnityEngine.InputSystem.PlayerInput>();
         if (input != null) input.DeactivateInput();
 
+        // убрать прицел
+        if (crosshair != null)
+            crosshair.SetActive(false);
+        
+        if (ammoText != null)
+            ammoText.SetActive(false);
+        
+        // заморозить игру (все в сцене остановится)
+        Time.timeScale = 0f;
+        
         if (blackScreenGroup != null) StartCoroutine(FadeToBlackSequence());
     }
 
     IEnumerator FadeToBlackSequence()
     {
-        yield return new WaitForSeconds(0.2f);
+        // важно: использовать RealTime, потому что timeScale=0
+        yield return new WaitForSecondsRealtime(0.2f);
 
         float timer = 0f;
 
@@ -51,7 +79,7 @@ public class DeathAnimationPlayer : MonoBehaviour
 
         while (timer < fadeDuration)
         {
-            timer += Time.deltaTime;
+            timer += Time.unscaledDeltaTime;
             blackScreenGroup.alpha = timer / fadeDuration;
             yield return null;
         }
@@ -63,4 +91,14 @@ public class DeathAnimationPlayer : MonoBehaviour
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
-}
+    
+    public void TryAgain()
+    {
+        // вернуть время, иначе следующая сцена "замрет"
+        Time.timeScale = 1f;
+
+        // первая сцена (где Start)
+        SceneManager.LoadScene(0);
+    }
+}    
+
