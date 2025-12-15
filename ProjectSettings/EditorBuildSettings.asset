@@ -8,6 +8,21 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/SampleScene.unity
     guid: 99c9720ab356a0642a771bea13969a05
+<<<<<<< Updated upstream
+=======
+  - enabled: 1
+    path: Assets/Scenes/00_Boot.unity
+    guid: 0ca41b68791ad584390f4fc813a4caaf
+  - enabled: 1
+    path: Assets/Scenes/01_Game.unity
+    guid: aeb7a7c96ee56324c817d1f101b1660f
+  - enabled: 1
+    path: Assets/Scenes/02_End.unity
+    guid: 06b31cece89d6134e8278870aa3cbca5
+  - enabled: 1
+    path: Assets/Scenes/DialogueScene.unity
+    guid: 2a091339e827688459c20079e8843d97
+>>>>>>> Stashed changes
   m_configObjects:
     com.unity.input.settings.actions: {fileID: -944628639613478452, guid: 052faaac586de48259a63d0c4782560b, type: 3}
   m_UseUCBPForAssetBundles: 0

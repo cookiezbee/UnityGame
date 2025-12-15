@@ -19,8 +19,38 @@ public class WeaponLogic : MonoBehaviour
 
     private bool isAttacking = false;
 
+<<<<<<< Updated upstream:Assets/Scripts/WeaponLogic.cs
+=======
+    void Start()
+    {
+        if (type == WeaponType.Gun)
+        {
+            if (ammoText == null)
+            {
+                GameObject foundObject = GameObject.Find("AmmoText");
+                if (foundObject != null) ammoText = foundObject.GetComponent<TextMeshProUGUI>();
+            }
+
+            currentAmmo = maxAmmo;
+            UpdateAmmoUI();
+        }
+    }
+
+    public void AddAmmo(int amount)
+    {
+        if (type != WeaponType.Gun) return;
+
+        currentAmmo += amount;
+        maxAmmo += amount;
+
+        UpdateAmmoUI();
+    }
+
+>>>>>>> Stashed changes:Assets/Scripts/New/WeaponLogic.cs
     public void shot()
     {
+        if (DialogueController.IsDialogueActive) return;
+
         if (isAttacking) return;
 
         if (type == WeaponType.Gun)

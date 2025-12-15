@@ -1393,7 +1393,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2de959f355d30f642993c873e325efb8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+<<<<<<< Updated upstream
 --- !u!114 &1106728708652588445
+=======
+  ammoPrefab: {fileID: 6601158696668983627, guid: d4482aa8895327b4ca992fdb71a81165, type: 3}
+  dropChance: 1
+--- !u!114 &4817079601020935881
+>>>>>>> Stashed changes
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
