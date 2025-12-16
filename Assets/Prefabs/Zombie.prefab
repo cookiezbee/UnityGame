@@ -1346,8 +1346,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6fb6ec9121a8d8846b0e3288269b0606, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ammoPrefab: {fileID: 6601158696668983627, guid: 783c1d003c909c4449e30d5d219f4291, type: 3}
-  dropChance: 0.3
+  dropChance: 0.5
 --- !u!114 &4817079601020935881
 MonoBehaviour:
   m_ObjectHideFlags: 0

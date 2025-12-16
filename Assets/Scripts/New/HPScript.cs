@@ -36,4 +36,14 @@ public class HPScript : MonoBehaviour
         isDead = true;
         OnDeath?.Invoke();
     }
+
+    public void Heal(int amount)
+    {
+        if (isDead) return;
+
+        currentHP += amount;
+        if (currentHP > maxHP) currentHP = maxHP;
+
+        OnHPChanged?.Invoke(currentHP);
+    }
 }

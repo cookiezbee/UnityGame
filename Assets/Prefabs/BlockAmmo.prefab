@@ -96,9 +96,9 @@ GameObject:
   m_Component:
   - component: {fileID: 176905819571083030}
   - component: {fileID: 7866242546043764780}
-  - component: {fileID: 3617824947211124565}
+  - component: {fileID: 6661601895851274025}
   m_Layer: 0
-  m_Name: Block
+  m_Name: BlockAmmo
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -142,7 +142,7 @@ MeshCollider:
   m_Convex: 0
   m_CookingOptions: 30
   m_Mesh: {fileID: -3262789968867269347, guid: 2871f4e15f14db04db8eea0d102e851f, type: 3}
---- !u!114 &3617824947211124565
+--- !u!114 &6661601895851274025
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -151,11 +151,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 6601158696668983627}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 35e97f8b366039842a1698a305686a89, type: 3}
+  m_Script: {fileID: 11500000, guid: 9c186b3f2f635d34593f17d147b03c4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   pickupRange: 2
-  textOffset: {x: 0, y: 1, z: 0}
+  textOffset: {x: 0, y: 1.5, z: 0}
   pickupTextPrefab: {fileID: 1658748458697685859, guid: f9266ae028a054049be45ad286cfbfb5, type: 3}
 --- !u!1001 &1034087359735777748
 PrefabInstance:

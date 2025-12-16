@@ -10,15 +10,24 @@ public class GateAnimationScript : MonoBehaviour
         animator = GetComponent<Animator>();
     }
 
+    //public void OpenGate()
+    //{
+    //    isOpen = true;
+    //    animator.SetBool("isOpen", isOpen);
+    //}
+
+    //public void CloseGate()
+    //{
+    //    isOpen = false;
+    //    animator.SetBool("isOpen", isOpen);
+    //}
+
     public void OpenGate()
     {
+        if (isOpen) return;
         isOpen = true;
-        animator.SetBool("isOpen", isOpen);
-    }
 
-    public void CloseGate()
-    {
-        isOpen = false;
-        animator.SetBool("isOpen", isOpen);
+        if (animator != null)
+            animator.SetBool("isOpen", true);
     }
 }

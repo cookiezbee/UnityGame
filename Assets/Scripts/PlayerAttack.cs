@@ -6,10 +6,12 @@ public class PlayerAttack : MonoBehaviour
     [SerializeField] GameObject pistolModel;
     [SerializeField] GameObject batModel;
 
-    [SerializeField] WeaponLogic pistolLogic;
-    [SerializeField] WeaponLogic batLogic;
+    [SerializeField] Gun pistolLogic;
+    [SerializeField] MeleeWeapon batLogic;
 
     [SerializeField] Animator animator;
+
+    private Weapon activeWeapon;
 
     private int currentWeapon = 1;
     private bool isAiming = false;
@@ -18,6 +20,8 @@ public class PlayerAttack : MonoBehaviour
 
     void Update()
     {
+        if (DialogueController.IsDialogueActive) return;
+
         float scroll = Input.GetAxis("Mouse ScrollWheel");
 
         if (scroll > 0f) EquipPistol();
@@ -50,8 +54,10 @@ public class PlayerAttack : MonoBehaviour
         currentWeapon = 1;
         pistolModel.SetActive(true);
         batModel.SetActive(false);
-        animator.SetInteger("WeaponType", 1);
 
+        activeWeapon = pistolLogic;
+
+        animator.SetInteger("WeaponType", 1);
         isAiming = false;
         animator.SetBool("Aiming", false);
     }
@@ -61,6 +67,9 @@ public class PlayerAttack : MonoBehaviour
         currentWeapon = 2;
         pistolModel.SetActive(false);
         batModel.SetActive(true);
+
+        activeWeapon = batLogic;
+
         animator.SetInteger("WeaponType", 2);
     }
 
@@ -70,7 +79,6 @@ public class PlayerAttack : MonoBehaviour
 
         animator.SetTrigger("Attack");
 
-        if (currentWeapon == 1) pistolLogic.shot();
-        else batLogic.shot();
+        if (activeWeapon != null) activeWeapon.TryAttack();
     }
 }

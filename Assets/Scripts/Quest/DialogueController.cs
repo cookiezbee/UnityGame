@@ -128,16 +128,17 @@ public class DialogueController : MonoBehaviour
     {
         if (QuestManager.Instance.zombieQuestCompleted)
         {
-            dialogueText.text = "Отлично! Ты убил двоих тварей. Воздух стал чище.";
+            dialogueText.text = "Воздух стал чище...";
 
             if (!QuestManager.Instance.zombieRewardGiven)
             {
                 GameObject player = GameObject.FindGameObjectWithTag("Player");
                 if (player != null)
                 {
-                    WeaponLogic weapon = player.GetComponentInChildren<WeaponLogic>();
+                    Gun weapon = player.GetComponentInChildren<Gun>();
                     if (weapon != null)
                     {
+                        dialogueText.text = "Спасибо! Как и обещал, держи патроны!";
                         weapon.AddAmmo(25);
                         QuestManager.Instance.zombieRewardGiven = true;
                     }

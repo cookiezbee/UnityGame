@@ -3,7 +3,6 @@ using UnityEngine.AI;
 
 public class EnemyAnimations : MonoBehaviour
 {
-    public GameObject ammoPrefab;
     [Range(0, 1)] public float dropChance = 0.3f;
 
     private Animator animator;
@@ -45,7 +44,13 @@ public class EnemyAnimations : MonoBehaviour
 
     void TryDropLoot()
     {
-        if (ammoPrefab != null && Random.value <= dropChance)
-            Instantiate(ammoPrefab, transform.position + Vector3.up * 0.25f, Quaternion.identity);
+        float randomVal = Random.value;
+
+        if (randomVal <= dropChance)
+        {
+            LootType type = Random.value > 0.5f ? LootType.Ammo : LootType.Health;
+
+            if (LootFactory.Instance != null) LootFactory.Instance.CreateLoot(type, transform.position);
+        }
     }
 }

@@ -1,6 +1,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class QuestManager : MonoBehaviour
 {
@@ -38,23 +39,7 @@ public class QuestManager : MonoBehaviour
 
     private void Start()
     {
-        GameObject canvas = GameObject.Find("Canvas");
-
-        if (canvas != null)
-        {
-            Transform[] allChildren = canvas.GetComponentsInChildren<Transform>(true);
-
-            foreach (Transform child in allChildren)
-            {
-                if (child.name == "FinalMessageText")
-                {
-                    finalMessageText = child.GetComponent<TextMeshProUGUI>();
-                    break;
-                }
-            }
-
-            if (finalMessageText != null) finalMessageText.gameObject.SetActive(false);
-        }
+        FindFinalText();
     }
 
     public void CheckGameCompletion()
@@ -75,7 +60,8 @@ public class QuestManager : MonoBehaviour
             finalMessageText.gameObject.SetActive(false);
         }
 
-        //Здесь можно открыть дверь
+        GateAnimationScript gate = FindObjectOfType<GateAnimationScript>();
+        if (gate != null) gate.OpenGate();
     }
 
     public void AddZombieKill()
@@ -90,5 +76,51 @@ public class QuestManager : MonoBehaviour
     public bool AllQuestsCompleted()
     {
         return keyQuestCompleted && zombieQuestCompleted && talkQuestCompleted;
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        keyQuestStarted = false;
+        keyQuestCompleted = false;
+        zombieQuestStarted = false;
+        zombieQuestCompleted = false;
+        talkQuestCompleted = false;
+        zombieRewardGiven = false;
+        zombiesKilled = 0;
+
+        gameFinished = false;
+
+        FindFinalText();
+    }
+
+    void FindFinalText()
+    {
+        GameObject canvas = GameObject.Find("Canvas");
+
+        if (canvas != null)
+        {
+            Transform[] allChildren = canvas.GetComponentsInChildren<Transform>(true);
+
+            foreach (Transform child in allChildren)
+            {
+                if (child.name == "FinalMessageText")
+                {
+                    finalMessageText = child.GetComponent<TextMeshProUGUI>();
+                    break;
+                }
+            }
+
+            if (finalMessageText != null) finalMessageText.gameObject.SetActive(false);
+        }
     }
 }

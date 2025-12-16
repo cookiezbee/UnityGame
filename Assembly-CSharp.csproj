@@ -67,7 +67,6 @@
     <Compile Include="Assets\Scripts\Quest\NPCSpawner.cs" />
     <Compile Include="Assets\Scripts\Maze\Generator.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark02.cs" />
-    <Compile Include="Assets\Scripts\Quest\DoorExit.cs" />
     <Compile Include="Assets\Scripts\Quest\KeyPickup.cs" />
     <Compile Include="Assets\Scripts\Zombie\ZombieSpawner.cs" />
     <Compile Include="Assets\Scripts\TargetHitScript.cs" />
@@ -75,15 +74,13 @@
     <Compile Include="Assets\UnityTechnologies\ParticlePack\EffectExamples\Misc Effects\Scripts\SpawnEffect.cs" />
     <Compile Include="Assets\Scripts\Quest\InventoryManager.cs" />
     <Compile Include="Assets\Scripts\Windows\EndMenu.cs" />
-    <Compile Include="Assets\Scripts\New\WeaponLogic.cs" />
-    <Compile Include="Assets\Scripts\CameraSwitcher.cs" />
-    <Compile Include="Assets\Scripts\Quest\AmmoPickup.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_ExampleScript_01.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMPro_InstructionOverlay.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeB.cs" />
     <Compile Include="Assets\Scripts\Quest\KeySpawner.cs" />
     <Compile Include="Assets\Scripts\Windows\BootMenu.cs" />
     <Compile Include="Assets\Scripts\Windows\FadeIn.cs" />
+    <Compile Include="Assets\Scripts\ItemDrop\HealthPickupItem.cs" />
     <Compile Include="Assets\Scripts\FixBounds.cs" />
     <Compile Include="Assets\Scripts\New\DeathAnimationPlayer.cs" />
     <Compile Include="Assets\Scripts\Zombie\ZombieDetector.cs" />
@@ -94,16 +91,20 @@
     <Compile Include="Assets\Scripts\EventParameters.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexZoom.cs" />
     <Compile Include="Assets\Scripts\New\HPScript.cs" />
-    <Compile Include="Assets\Scripts\New\BulletProjectile.cs" />
     <Compile Include="Assets\UnityTechnologies\ParticlePack\Shared\Scripts\ProximityActivate.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextSelector_B.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\SkewTextExample.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\WarpTextExample.cs" />
+    <Compile Include="Assets\Scripts\Weapon\BulletProjectile.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\ShaderPropAnimator.cs" />
+    <Compile Include="Assets\Scripts\Weapon\Weapon.cs" />
     <Compile Include="Assets\Scripts\New\ZombieHealthUI.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextInfoDebugTool.cs" />
     <Compile Include="Assets\Scripts\Quest\DialogueController.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeA.cs" />
+    <Compile Include="Assets\Scripts\ItemDrop\PickupItem.cs" />
+    <Compile Include="Assets\Scripts\ItemDrop\LootFactory.cs" />
+    <Compile Include="Assets\Scripts\Weapon\MeleeWeapon.cs" />
     <Compile Include="Assets\Scripts\Maze\MazeCell.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01_UGUI.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\SimpleScript.cs" />
@@ -116,12 +117,15 @@
     <Compile Include="Assets\Scripts\New\EnemyAnimations.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_DigitValidator.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_FrameRateCounter.cs" />
+    <Compile Include="Assets\Scripts\ItemDrop\AmmoPickupItem.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TextMeshSpawner.cs" />
     <Compile Include="Assets\Scripts\PlayerAttack.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\CameraController.cs" />
     <Compile Include="Assets\Scripts\CursorLock.cs" />
+    <Compile Include="Assets\Scripts\Weapon\Gun.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark03.cs" />
+    <Compile Include="Assets\Scripts\Quest\VictoryZone.cs" />
     <Compile Include="Assets\Scripts\Quest\NPCLookAt.cs" />
     <Compile Include="Assets\Scripts\Quest\InventoryUI.cs" />
     <Compile Include="Assets\Scripts\PlayerMovement.cs" />
@@ -1172,16 +1176,16 @@
       <HintPath>Library\ScriptAssemblies\UnityEditor.UI.dll</HintPath>
       <Private>False</Private>
     </Reference>
-    <Reference Include="Unity.Searcher.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.Searcher.Editor.dll</HintPath>
-      <Private>False</Private>
-    </Reference>
     <Reference Include="Unity.Rider.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Rider.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.AI.Navigation">
       <HintPath>Library\ScriptAssemblies\Unity.AI.Navigation.dll</HintPath>
+      <Private>False</Private>
+    </Reference>
+    <Reference Include="Unity.Searcher.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.Searcher.Editor.dll</HintPath>
       <Private>False</Private>
     </Reference>
     <Reference Include="Unity.RenderPipeline.Universal.ShaderLibrary">

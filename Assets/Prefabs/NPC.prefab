@@ -96,7 +96,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   npcID: 
   npcName: 
-  interactRange: 4
+  interactRange: 2
   textOffset: {x: 0, y: 2.2, z: 0}
   interactTextPrefab: {fileID: 1658748458697685859, guid: 1a05dbfa6739e274cb418a8e122483bf, type: 3}
 --- !u!114 &5067554388345138526
