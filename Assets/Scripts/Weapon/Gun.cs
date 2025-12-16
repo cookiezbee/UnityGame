@@ -26,20 +26,13 @@ public class Gun : Weapon
         UpdateAmmoUI();
     }
 
-    protected override void PerformAttack()
+    protected override void PerformAttack() { }
+
+    public override void OnAnimationEventTriggered()
     {
         if (currentAmmo > 0)
         {
             if (muzzleFlash != null) muzzleFlash.Play();
-
-            //if (bulletPrefab != null)
-            //{
-            //    BulletProjectile newBullet = Instantiate(bulletPrefab, firingPoint.position, firingPoint.rotation);
-            //    newBullet.Init(damage, impulse);
-            //}
-
-            //currentAmmo--;
-            //UpdateAmmoUI();
 
             Ray ray = playerCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
             RaycastHit hit;

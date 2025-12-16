@@ -18,7 +18,7 @@ public class Flashlight : MonoBehaviour
         flashlightSource.enabled = newState;
 
         if (zombieDetectors == null || zombieDetectors.Length == 0)
-            zombieDetectors = FindObjectsOfType<ZombieDetector>();
+            zombieDetectors = FindObjectsByType<ZombieDetector>(FindObjectsSortMode.None);
 
         foreach (var detector in zombieDetectors)
             detector.SetFlashlightState(newState);

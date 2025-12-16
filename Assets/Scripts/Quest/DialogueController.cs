@@ -135,7 +135,7 @@ public class DialogueController : MonoBehaviour
                 GameObject player = GameObject.FindGameObjectWithTag("Player");
                 if (player != null)
                 {
-                    Gun weapon = player.GetComponentInChildren<Gun>();
+                    Gun weapon = player.GetComponentInChildren<Gun>(true);
                     if (weapon != null)
                     {
                         dialogueText.text = "Спасибо! Как и обещал, держи патроны!";

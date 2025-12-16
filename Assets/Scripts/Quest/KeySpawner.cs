@@ -26,8 +26,59 @@ public class KeySpawner : MonoBehaviour
         Cell[] cells = mazeRoot.GetComponentsInChildren<Cell>();
         if (cells.Length == 0) return;
 
-        Cell randomCell = cells[Random.Range(0, cells.Length)];
-        Vector3 spawnPos = randomCell.transform.position + Vector3.up * 2f;
+        //Cell randomCell = cells[Random.Range(0, cells.Length)];
+        //Vector3 spawnPos = randomCell.transform.position + Vector3.up * 2f;
+
+        Transform player = GameObject.FindGameObjectWithTag("Player")?.transform;
+        NPCInteractable[] allNpcs = FindObjectsByType<NPCInteractable>(FindObjectsSortMode.None);
+        ZombiePatrol[] allZombies = FindObjectsByType<ZombiePatrol>(FindObjectsSortMode.None);
+
+        Cell targetCell = null;
+
+        for (int i = 0; i < 50; i++)
+        {
+            Cell randomCell = cells[Random.Range(0, cells.Length)];
+            Vector3 pos = randomCell.transform.position;
+            bool isSafe = true;
+
+            if (player != null && Vector3.Distance(pos, player.position) < 5f) isSafe = false;
+
+            if (isSafe)
+            {
+                foreach (var npc in allNpcs)
+                {
+                    if (npc == null) continue;
+                    if (Vector3.Distance(pos, npc.transform.position) < 3f)
+                    {
+                        isSafe = false;
+                        break;
+                    }
+                }
+            }
+
+            if (isSafe)
+            {
+                foreach (var zombie in allZombies)
+                {
+                    if (zombie == null) continue;
+                    if (Vector3.Distance(pos, zombie.transform.position) < 2f)
+                    {
+                        isSafe = false;
+                        break;
+                    }
+                }
+            }
+
+            if (isSafe)
+            {
+                targetCell = randomCell;
+                break;
+            }
+        }
+
+        if (targetCell == null) targetCell = cells[Random.Range(0, cells.Length)];
+
+        Vector3 spawnPos = targetCell.transform.position;
 
         NavMeshHit hit;
         if (NavMesh.SamplePosition(spawnPos, out hit, 2f, NavMesh.AllAreas))

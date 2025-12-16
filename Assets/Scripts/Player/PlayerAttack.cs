@@ -77,8 +77,17 @@ public class PlayerAttack : MonoBehaviour
     {
         if (DialogueController.IsDialogueActive) return;
 
-        animator.SetTrigger("Attack");
+        if (Time.time >= activeWeapon.nextAttackTime)
+        {
+            animator.ResetTrigger("Attack");
+            animator.SetTrigger("Attack");
 
-        if (activeWeapon != null) activeWeapon.TryAttack();
+            activeWeapon.TryAttack();
+        }
+    }
+
+    public void OnAnimationShootEvent()
+    {
+        if (activeWeapon != null) activeWeapon.OnAnimationEventTriggered();
     }
 }

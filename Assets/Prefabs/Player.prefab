@@ -520,6 +520,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 3
   attackRate: 0.5
+  nextAttackTime: 0
   currentAmmo: 15
   firingPoint: {fileID: 7751044102098890813}
   impulse: 10
@@ -643,8 +644,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   damage: 2
   attackRate: 1
-  attackRange: 3
-  hitDelay: 0.5
+  nextAttackTime: 0
+  attackRange: 2
+  hitDelay: 0.4
   attackPoint: {fileID: 5200196888700182343}
 --- !u!114 &5565447703526835995
 MonoBehaviour:

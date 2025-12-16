@@ -6,7 +6,7 @@ public abstract class Weapon : MonoBehaviour
     public float attackRate = 0.5f;
 
     protected bool isAttacking = false;
-    protected float nextAttackTime = 0f;
+    public float nextAttackTime = 0f;
 
     public virtual void TryAttack()
     {
@@ -17,6 +17,8 @@ public abstract class Weapon : MonoBehaviour
         PerformAttack();
         nextAttackTime = Time.time + attackRate;
     }
+
+    public virtual void OnAnimationEventTriggered() { }
 
     protected abstract void PerformAttack();
 }
