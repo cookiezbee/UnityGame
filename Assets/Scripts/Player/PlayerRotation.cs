@@ -17,6 +17,8 @@ public class PlayerRotation : MonoBehaviour
 
     private void OnLook(InputValue lookValue)
     {
+        if (DialogueController.IsDialogueActive) return;
+
         Vector2 rotation = lookValue.Get<Vector2>();
         float mouseY = rotation.y * ySens;
         Quaternion yRotation = visor.localRotation * Quaternion.AngleAxis(-mouseY, Vector3.right);

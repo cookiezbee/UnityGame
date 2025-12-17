@@ -153,8 +153,8 @@ MonoBehaviour:
   startPrefab: {fileID: 8679736171115583401, guid: ab51acab982c640489f7577ed9466349, type: 3}
   gatePrefab: {fileID: 8087806149513623072, guid: c1446c137a87afb40af5035869727ec8, type: 3}
   CellSize: {x: 4, y: 4}
-  Width: 6
-  Height: 6
+  Width: 20
+  Height: 20
   surface: {fileID: 1273731753}
   zombieSpawner: {fileID: 1760649283}
 --- !u!4 &19953014

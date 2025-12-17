@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 728220493308423318}
   - component: {fileID: -8875603946910121342}
   - component: {fileID: 5067554388345138526}
+  - component: {fileID: 2547327378244363256}
   m_Layer: 0
   m_Name: NPC
   m_TagString: Untagged
@@ -113,6 +114,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lookRange: 5
   turnSpeed: 5
+--- !u!208 &2547327378244363256
+NavMeshObstacle:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 843966853354376212}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Shape: 0
+  m_Extents: {x: 0.25, y: 1, z: 0.25}
+  m_MoveThreshold: 0.1
+  m_Carve: 0
+  m_CarveOnlyStationary: 1
+  m_Center: {x: 0, y: 1, z: 0}
+  m_TimeToStationary: 0.5
 --- !u!1 &1021480428289049544
 GameObject:
   m_ObjectHideFlags: 0

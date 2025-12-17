@@ -40,24 +40,51 @@ public class NPCSpawner : MonoBehaviour
 
     private Cell[] GetRandomUniqueCells(Cell[] allCells, int count)
     {
+        ZombiePatrol[] allZombies = FindObjectsByType<ZombiePatrol>(FindObjectsSortMode.None);
+
         Cell[] result = new Cell[count];
         for (int i = 0; i < count; i++)
         {
             bool found = false;
-            while (!found)
+            int attempts = 0;
+            while (!found && attempts < 50)
             {
+                attempts++;
                 Cell candidate = allCells[Random.Range(0, allCells.Length)];
-                bool isUnique = true;
+                Vector3 pos = candidate.transform.position;
+
+                bool isSafeAndUnique = true;
+
                 for (int j = 0; j < i; j++)
                 {
-                    if (result[j] == candidate) isUnique = false;
+                    if (result[j] == candidate)
+                    {
+                        isSafeAndUnique = false;
+                        break;
+                    }
                 }
-                if (isUnique)
+
+                if (isSafeAndUnique)
+                {
+                    foreach (var zombie in allZombies)
+                    {
+                        if (zombie == null) continue;
+
+                        if (Vector3.Distance(pos, zombie.transform.position) < 2f)
+                        {
+                            isSafeAndUnique = false;
+                            break;
+                        }
+                    }
+                }
+
+                if (isSafeAndUnique)
                 {
                     result[i] = candidate;
                     found = true;
                 }
             }
+            if (!found) result[i] = allCells[Random.Range(0, allCells.Length)];
         }
         return result;
     }
