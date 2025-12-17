@@ -11,7 +11,9 @@ public class DeathAnimationPlayer : MonoBehaviour
 
     private GameObject crosshair;
     private GameObject ammoText;
-    
+
+    private InventoryUI inventoryUIScript;
+
     [SerializeField] float fadeDuration = 2.0f;
     
     private bool isDeathPlayed = false;
@@ -42,6 +44,8 @@ public class DeathAnimationPlayer : MonoBehaviour
         ammoText = GameObject.Find("AmmoText");
         if (ammoText != null)
             ammoText.SetActive(true);
+
+        inventoryUIScript = FindObjectOfType<InventoryUI>();
     }
 
     public void PlayDeath()
@@ -60,7 +64,19 @@ public class DeathAnimationPlayer : MonoBehaviour
         
         if (ammoText != null)
             ammoText.SetActive(false);
-        
+
+        if (inventoryUIScript != null)
+        {
+            inventoryUIScript.enabled = false;
+
+            if (inventoryUIScript.keyStatusText != null) inventoryUIScript.keyStatusText.gameObject.SetActive(false);
+        }
+        else
+        {
+            GameObject keyTextObj = GameObject.Find("KeyStatusText");
+            if (keyTextObj != null) keyTextObj.SetActive(false);
+        }
+
         // заморозить игру (все в сцене остановится)
         Time.timeScale = 0f;
         
