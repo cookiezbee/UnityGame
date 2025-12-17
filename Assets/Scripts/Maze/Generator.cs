@@ -49,7 +49,7 @@ public class Generator
         maze.startY = startY;
         maze.cycles = cycles;
 
-        // NEW: отдаём наружу информацию о выходе
+        // отдаём наружу информацию о выходе
         maze.exitX = exitX;
         maze.exitY = exitY;
         maze.exitSide = exitSide;
@@ -396,7 +396,7 @@ public class Generator
         int ex = exitCell.X;
         int ey = exitCell.Y;
 
-        // NEW: запоминаем выход
+        // запоминаем выход
         exitX = ex;
         exitY = ey;
 

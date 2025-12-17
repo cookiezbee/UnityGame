@@ -77,7 +77,7 @@ public class Spawner : MonoBehaviour
             }
         }
 
-        // NEW: ставим ворота в месте выхода наружу
+        // ставим ворота в месте выхода наружу
         if (gatePrefab != null && exitCellInstance != null)
         {
             Transform anchor = null;
@@ -89,7 +89,8 @@ public class Spawner : MonoBehaviour
 
             if (anchor != null)
             {
-                GameObject gate = Instantiate(gatePrefab, anchor.position, anchor.rotation, mazeHandler.transform);
+                Quaternion rot = GetGateRotation(maze.exitSide);
+                GameObject gate = Instantiate(gatePrefab, anchor.position, rot, mazeHandler.transform);
                 gate.name = "Gate";
             }
         }
@@ -155,6 +156,19 @@ public class Spawner : MonoBehaviour
         else
         {
             Debug.LogWarning("Spawner: NPCSpawner не найден на сцене!");
+        }
+    }
+    
+    private Quaternion GetGateRotation(int exitSide)
+    {
+        // 0 = Left, 1 = Right, 2 = Bottom, 3 = Up
+        switch (exitSide)
+        {
+            case 0: return Quaternion.LookRotation(Vector3.left);
+            case 1: return Quaternion.LookRotation(Vector3.right);
+            case 2: return Quaternion.LookRotation(Vector3.back);
+            case 3: return Quaternion.LookRotation(Vector3.forward);
+            default: return Quaternion.identity;
         }
     }
 }
