@@ -157,6 +157,7 @@ MonoBehaviour:
   pickupRange: 2
   textOffset: {x: 0, y: 1.5, z: 0}
   pickupTextPrefab: {fileID: 1658748458697685859, guid: f9266ae028a054049be45ad286cfbfb5, type: 3}
+  pickupSound: {fileID: 8300000, guid: 06eca8d6dfcb43942aadf52888c2e346, type: 3}
 --- !u!1001 &1034087359735777748
 PrefabInstance:
   m_ObjectHideFlags: 0

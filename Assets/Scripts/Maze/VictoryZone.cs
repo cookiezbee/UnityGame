@@ -8,6 +8,8 @@ public class VictoryZone : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            if (MusicController.Instance != null) MusicController.Instance.StopMusic();
+
             Cursor.lockState = CursorLockMode.None;
             Cursor.visible = true;
 

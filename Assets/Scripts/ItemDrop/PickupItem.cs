@@ -13,6 +13,8 @@ public abstract class PickupItem : MonoBehaviour
     private bool isNearPlayer = false;
     private TextMeshProUGUI tmpText;
 
+    public AudioClip pickupSound;
+
     protected virtual void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
@@ -53,7 +55,12 @@ public abstract class PickupItem : MonoBehaviour
     {
         bool success = OnPickup(player.gameObject);
 
-        if (success) Destroy(gameObject);
+        if (success)
+        {
+            if (pickupSound != null) AudioSource.PlayClipAtPoint(pickupSound, transform.position, 0.4f);
+
+            Destroy(gameObject);
+        }
         else ShowWarning();
     }
 

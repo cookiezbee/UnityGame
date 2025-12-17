@@ -11,6 +11,8 @@ public class KeyPickup : MonoBehaviour
     private GameObject textInstance;
     private bool isNearPlayer = false;
 
+    public AudioClip keyPickupSound;
+
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player")?.transform;
@@ -47,6 +49,9 @@ public class KeyPickup : MonoBehaviour
     void PickupKey()
     {
         InventoryManager.Instance.AddKey();
+
+        if (keyPickupSound != null) AudioSource.PlayClipAtPoint(keyPickupSound, transform.position, 0.4f);
+
         Destroy(gameObject);
     }
 }

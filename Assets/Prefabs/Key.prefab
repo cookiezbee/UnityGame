@@ -32,7 +32,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 2.9, y: 0.5, z: -6.47}
-  m_LocalScale: {x: 1, y: 0.8, z: 1}
+  m_LocalScale: {x: 0.6, y: 0.6, z: 0.6}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -2240,3 +2240,4 @@ MonoBehaviour:
   pickupRange: 2
   textOffset: {x: 0, y: 1, z: 0}
   pickupTextPrefab: {fileID: 1658748458697685859, guid: 4cf1ce1c7a253f44aaed2b573dedef98, type: 3}
+  keyPickupSound: {fileID: 8300000, guid: 023ee05b6b93cd342b489f3a5220ba96, type: 3}

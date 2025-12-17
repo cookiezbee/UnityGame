@@ -17,11 +17,17 @@ public class DialogueController : MonoBehaviour
 
     public static bool IsDialogueActive = false;
 
+    public AudioSource audioSource;
+    public AudioClip questFinishedSound;
+    private bool pendingQuestSound = false;
+
     private void Awake()
     {
         if (Instance == null) Instance = this;
 
         if (dialoguePanel != null) dialoguePanel.SetActive(false);
+
+        if (audioSource == null) audioSource = GetComponent<AudioSource>();
     }
 
     public void StartDialogue(string npcID, string npcName)
@@ -29,6 +35,7 @@ public class DialogueController : MonoBehaviour
         IsDialogueActive = true;
         currentNPC = npcID;
         dialogueStep = 0;
+        pendingQuestSound = false;
 
         if (hudPanel != null) hudPanel.SetActive(false);
         if (dialoguePanel != null) dialoguePanel.SetActive(true);
@@ -55,12 +62,12 @@ public class DialogueController : MonoBehaviour
 
         if (currentNPC == "KeyGiver")
         {
-            if (npcNameText) npcNameText.text = "Охотник ключей";
+            if (npcNameText) npcNameText.text = "Смотритель";
             ShowKeyGiverDialogue();
         }
         else if (currentNPC == "ZombieGiver")
         {
-            if (npcNameText) npcNameText.text = "Охотник за зомби";
+            if (npcNameText) npcNameText.text = "Сержант";
             ShowZombieGiverDialogue();
         }
         else if (currentNPC == "Chatter")
@@ -85,6 +92,7 @@ public class DialogueController : MonoBehaviour
 
             InventoryManager.Instance.RemoveKey();
             QuestManager.Instance.keyQuestCompleted = true;
+            pendingQuestSound = true;
 
             QuestManager.Instance.CheckGameCompletion();
 
@@ -141,6 +149,7 @@ public class DialogueController : MonoBehaviour
                         dialogueText.text = "Спасибо! Как и обещал, держи патроны!";
                         weapon.AddAmmo(25);
                         QuestManager.Instance.zombieRewardGiven = true;
+                        pendingQuestSound = true;
                     }
                 }
                 QuestManager.Instance.CheckGameCompletion();
@@ -202,6 +211,8 @@ public class DialogueController : MonoBehaviour
             {
                 dialogueText.text = "Спасибо, что остановился поговорить. Удачи в пути!";
                 QuestManager.Instance.talkQuestCompleted = true;
+                pendingQuestSound = true;
+
                 QuestManager.Instance.CheckGameCompletion();
                 canAdvance = true;
             }
@@ -215,6 +226,12 @@ public class DialogueController : MonoBehaviour
         if (hudPanel != null) hudPanel.SetActive(true);
 
         Time.timeScale = 1f;
+
+        if (pendingQuestSound)
+        {
+            if (audioSource != null && questFinishedSound != null) audioSource.PlayOneShot(questFinishedSound);
+            pendingQuestSound = false; 
+        }
 
         StartCoroutine(EnableInputDelay());
     }

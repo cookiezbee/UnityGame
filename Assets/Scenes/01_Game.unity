@@ -297,6 +297,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e9bfbbf57d265944ba6e59d9286081b9, type: 3}
+--- !u!82 &152636299 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 1412492744572835455, guid: e9bfbbf57d265944ba6e59d9286081b9, type: 3}
+  m_PrefabInstance: {fileID: 152636298}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &439340234
 GameObject:
   m_ObjectHideFlags: 0
@@ -750,6 +755,7 @@ MonoBehaviour:
   npc2Position: {x: 0, y: 0, z: 0}
   npc3Position: {x: 0, y: 0, z: 0}
   keyPosition: {x: 0, y: 0, z: 0}
+  questCompleteSound: {fileID: 152636299}
 --- !u!4 &1336669966
 Transform:
   m_ObjectHideFlags: 0

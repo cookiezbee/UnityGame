@@ -13,10 +13,19 @@ public class PlayerAttack : MonoBehaviour
 
     private Weapon activeWeapon;
 
-    private int currentWeapon = 1;
+    private int currentWeapon = 0;
     private bool isAiming = false;
 
-    void Start() => EquipPistol();
+    public AudioSource audioSource;
+    public AudioClip pistolEquipSound;
+    public AudioClip batEquipSound;
+
+    void Start()
+    {
+        if (audioSource == null) audioSource = GetComponent<AudioSource>();
+
+        EquipPistol();
+    }
 
     void Update()
     {
@@ -51,6 +60,10 @@ public class PlayerAttack : MonoBehaviour
 
     void EquipPistol()
     {
+        if (currentWeapon == 1) return;
+
+        if (currentWeapon != 0 && audioSource != null && pistolEquipSound != null) audioSource.PlayOneShot(pistolEquipSound);
+
         currentWeapon = 1;
         pistolModel.SetActive(true);
         batModel.SetActive(false);
@@ -64,6 +77,10 @@ public class PlayerAttack : MonoBehaviour
 
     void EquipBat()
     {
+        if (currentWeapon == 2) return;
+
+        if (currentWeapon != 0 && audioSource != null && batEquipSound != null) audioSource.PlayOneShot(batEquipSound);
+
         currentWeapon = 2;
         pistolModel.SetActive(false);
         batModel.SetActive(true);

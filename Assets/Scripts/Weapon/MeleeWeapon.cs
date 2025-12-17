@@ -7,8 +7,22 @@ public class MeleeWeapon : Weapon
     public float hitDelay = 0.2f;
     public Transform attackPoint;
 
+    public AudioSource meleeAudioSource;
+    public AudioClip swingSound;
+
+    private void Start()
+    {
+        if (meleeAudioSource == null) meleeAudioSource = GetComponent<AudioSource>();
+    }
+
     protected override void PerformAttack()
     {
+        if (meleeAudioSource != null && swingSound != null)
+        {
+            meleeAudioSource.pitch = Random.Range(0.9f, 1.1f);
+            meleeAudioSource.PlayOneShot(swingSound);
+        }
+
         StartCoroutine(MeleeStrikeRoutine());
     }
 

@@ -34,6 +34,10 @@ public class ZombiePatrol : MonoBehaviour
 
     private HPScript hpScript;
 
+    public AudioSource audioSource;
+    public AudioClip aggroSound;
+    private bool wasChasing = false;
+
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
@@ -45,6 +49,8 @@ public class ZombiePatrol : MonoBehaviour
             detector = GetComponent<ZombieDetector>();
 
         hpScript = GetComponent<HPScript>();
+
+        if (audioSource == null) audioSource = GetComponent<AudioSource>();
     }
 
     private void OnEnable()
@@ -94,8 +100,20 @@ public class ZombiePatrol : MonoBehaviour
         if (animator != null)
             animator.SetFloat(SpeedHash, speed);
 
+        bool isChasingNow = detector != null && detector.PlayerDetected && detector.PlayerTransform != null;
+
+        if (isChasingNow && !wasChasing)
+        {
+            if (audioSource != null && aggroSound != null)
+            {
+                audioSource.pitch = Random.Range(0.8f, 1.2f);
+                audioSource.PlayOneShot(aggroSound);
+            }
+        }
+        wasChasing = isChasingNow;
+
         // погоня / атака
-        if (detector != null && detector.PlayerDetected && detector.PlayerTransform != null)
+        if (isChasingNow)
         {
             Transform player = detector.PlayerTransform;
 

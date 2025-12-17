@@ -14,11 +14,17 @@ public class Gun : Weapon
 
     private TextMeshProUGUI ammoText;
 
+    public AudioSource gunAudioSource;
+    public AudioClip shootSound;
+    public AudioClip emptyClickSound;
+
     private void Start()
     {
         currentAmmo = 15;
 
         if (playerCamera == null) playerCamera = Camera.main;
+
+        if (gunAudioSource == null) gunAudioSource = GetComponent<AudioSource>();
 
         GameObject foundObject = GameObject.Find("AmmoText");
         if (foundObject != null) ammoText = foundObject.GetComponent<TextMeshProUGUI>();
@@ -32,6 +38,8 @@ public class Gun : Weapon
     {
         if (currentAmmo > 0)
         {
+            if (gunAudioSource != null && shootSound != null) gunAudioSource.PlayOneShot(shootSound, 0.6f);
+
             if (muzzleFlash != null) muzzleFlash.Play();
 
             Ray ray = playerCamera.ViewportPointToRay(new Vector3(0.5f, 0.5f, 0));
@@ -53,6 +61,10 @@ public class Gun : Weapon
 
             currentAmmo--;
             UpdateAmmoUI();
+        }
+        else
+        {
+            if (gunAudioSource != null && emptyClickSound != null) gunAudioSource.PlayOneShot(emptyClickSound);
         }
     }
 

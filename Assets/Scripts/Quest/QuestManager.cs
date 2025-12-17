@@ -27,6 +27,8 @@ public class QuestManager : MonoBehaviour
     private TextMeshProUGUI finalMessageText;
     private bool gameFinished = false;
 
+    public AudioSource questCompleteSound;
+
     private void Awake()
     {
         if (Instance == null)
@@ -51,11 +53,21 @@ public class QuestManager : MonoBehaviour
 
     IEnumerator ShowFinalTextRoutine()
     {
+        yield return new WaitUntil(() => !DialogueController.IsDialogueActive);
+
+        yield return new WaitForSeconds(0.5f);
+
         gameFinished = true;
 
         if (finalMessageText != null)
         {
             finalMessageText.gameObject.SetActive(true);
+
+            if (questCompleteSound != null)
+            {
+                questCompleteSound.Play();
+            }
+
             yield return new WaitForSeconds(5f);
             finalMessageText.gameObject.SetActive(false);
         }
