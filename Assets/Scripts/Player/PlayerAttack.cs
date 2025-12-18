@@ -31,12 +31,15 @@ public class PlayerAttack : MonoBehaviour
     {
         if (DialogueController.IsDialogueActive || !PlayerMovement.PlayerHasMoved) return;
 
-        float scroll = Input.GetAxis("Mouse ScrollWheel");
-
-        if (Mathf.Abs(scroll) > 0f)
+        if (!isAiming)
         {
-            if (currentWeapon == 1) EquipBat();
-            else EquipPistol();
+            float scroll = Input.GetAxis("Mouse ScrollWheel");
+
+            if (Mathf.Abs(scroll) > 0f)
+            {
+                if (currentWeapon == 1) EquipBat();
+                else EquipPistol();
+            }
         }
 
         if (currentWeapon == 1)

@@ -28,10 +28,6 @@ public class ZombieDetector : MonoBehaviour
     public Vector3 LastPlayerPosition => lastPlayerPosition;
     public Transform PlayerTransform => playerTransform;
 
-    // чтобы не дергать IgnoreCollision каждый кадр
-    private static bool collisionsIgnored = false;
-    private static Transform cachedPlayerForCollision = null;
-
     private WaitForSeconds wait;
 
     private void Start()
@@ -46,6 +42,13 @@ public class ZombieDetector : MonoBehaviour
         while (true)
         {
             yield return wait;
+
+            if (!PlayerMovement.PlayerHasMoved)
+            {
+                playerDetected = false;
+                playerTransform = null;
+                continue;
+            }
 
             Collider[] hits = Physics.OverlapSphere(transform.position, detectionRadius, playerLayer);
 
@@ -99,24 +102,5 @@ public class ZombieDetector : MonoBehaviour
         detectionRadius = enabled
             ? baseDetectionRadius * flashlightRadiusMultiplier
             : baseDetectionRadius;
-    }
-
-    private void SetCollisionIgnored(Transform player, bool ignored)
-    {
-        if (player == null) return;
-
-        Collider[] zombieCols = GetComponentsInParent<Collider>(true);
-        Collider[] playerCols = player.GetComponentsInParent<Collider>(true);
-
-        for (int i = 0; i < zombieCols.Length; i++)
-        {
-            if (zombieCols[i] == null) continue;
-
-            for (int j = 0; j < playerCols.Length; j++)
-            {
-                if (playerCols[j] == null) continue;
-                Physics.IgnoreCollision(zombieCols[i], playerCols[j], ignored);
-            }
-        }
     }
 }
