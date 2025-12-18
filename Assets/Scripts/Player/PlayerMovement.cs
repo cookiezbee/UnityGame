@@ -17,11 +17,7 @@ public class PlayerMovement : MonoBehaviour
     public AudioSource footstepSource;
     public AudioClip[] footstepSounds;
 
-    [SerializeField] float walkInterval = 0.6f;
-    [SerializeField] float runInterval = 0.3f;
-
-    private float stepTimer;
-    private bool wasRunning = false;
+    private float lastFootstepTime = 0f;
 
     private void Start()
     {
@@ -45,7 +41,7 @@ public class PlayerMovement : MonoBehaviour
 
         velocity = transform.TransformDirection(direction) * currentSpeed * Time.deltaTime;
 
-        if (grounded && velocity.y < 0) velocity.y = 0;
+        if (grounded && velocity.y < 0) velocity.y = -2f;
 
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity);
@@ -53,51 +49,31 @@ public class PlayerMovement : MonoBehaviour
         if (animator != null)
         {
             float targetAnimSpeed = 0f;
-
-            if (direction.magnitude > 0.1f)
-            {
-                targetAnimSpeed = isRunning ? 1f : 0.5f;
-            }
+            if (direction.magnitude > 0.1f) targetAnimSpeed = isRunning ? 1f : 0.5f;
 
             animator.SetFloat("Speed", targetAnimSpeed, 0.1f, Time.deltaTime);
         }
-        HandleFootsteps(isRunning);
     }
 
-    void HandleFootsteps(bool isRunning)
+    public void OnFootstep(int type)
     {
+        bool isRunningInput = Input.GetKey(KeyCode.LeftShift);
+
+        if (isRunningInput && type == 1) return;
+
+        if (!isRunningInput && type == 2) return;
+
         if (direction.magnitude > 0.1f)
         {
-            if (grounded)
+            if (footstepSource != null && footstepSounds != null && footstepSounds.Length > 0)
             {
-                if (isRunning != wasRunning)
-                {
-                    float oldInterval = wasRunning ? runInterval : walkInterval;
-                    float newInterval = isRunning ? runInterval : walkInterval;
-                    float progress = stepTimer / oldInterval;
-                    stepTimer = progress * newInterval;
-                    wasRunning = isRunning;
-                }
+                if (Time.time - lastFootstepTime < 0.1f) return;
+                lastFootstepTime = Time.time;
 
-                stepTimer -= Time.deltaTime;
-
-                if (stepTimer <= 0)
-                {
-                    if (footstepSource != null && footstepSounds != null && footstepSounds.Length > 0)
-                    {
-                        AudioClip clip = footstepSounds[Random.Range(0, footstepSounds.Length)];
-                        footstepSource.pitch = Random.Range(0.9f, 1.1f);
-                        footstepSource.PlayOneShot(clip);
-                    }
-
-                    stepTimer = isRunning ? runInterval : walkInterval;
-                }
+                AudioClip clip = footstepSounds[Random.Range(0, footstepSounds.Length)];
+                footstepSource.pitch = Random.Range(0.9f, 1.1f);
+                footstepSource.PlayOneShot(clip);
             }
-        }
-        else
-        {
-            stepTimer = 0f;
-            wasRunning = isRunning;
         }
     }
 }

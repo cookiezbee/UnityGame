@@ -33,8 +33,11 @@ public class PlayerAttack : MonoBehaviour
 
         float scroll = Input.GetAxis("Mouse ScrollWheel");
 
-        if (scroll > 0f) EquipPistol();
-        else if (scroll < 0f) EquipBat();
+        if (Mathf.Abs(scroll) > 0f)
+        {
+            if (currentWeapon == 1) EquipBat();
+            else EquipPistol();
+        }
 
         if (currentWeapon == 1)
         {

@@ -447,7 +447,7 @@ Transform:
   m_GameObject: {fileID: 2610446103361850811}
   serializedVersion: 2
   m_LocalRotation: {x: 0.000000014901163, y: -0.00000001676381, z: 2.4980026e-16, w: 1}
-  m_LocalPosition: {x: 0.00000009689331, y: 0, z: 0.00000065402986}
+  m_LocalPosition: {x: -0.141, y: 0, z: 0.184}
   m_LocalScale: {x: 0.9999999, y: 0.99999994, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -2031,7 +2031,7 @@ CharacterController:
   m_SlopeLimit: 45
   m_StepOffset: 0.3
   m_SkinWidth: 0.08
-  m_MinMoveDistance: 0.001
+  m_MinMoveDistance: 0.01
   m_Center: {x: 0, y: 1, z: 0}
 --- !u!114 &6827011301842021318
 MonoBehaviour:
@@ -2086,8 +2086,6 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 85a246652381fa64c9a9b7f84e78ee1d, type: 3}
   - {fileID: 8300000, guid: c6cf56ce680af6145a18b4960a314836, type: 3}
   - {fileID: 8300000, guid: a1a0cb177d3131e42a5c45f3417bcf8b, type: 3}
-  walkInterval: 0.6
-  runInterval: 0.3
 --- !u!114 &6314108346919320063
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2444,7 +2442,7 @@ AudioSource:
   m_audioClip: {fileID: 0}
   m_Resource: {fileID: 0}
   m_PlayOnAwake: 1
-  m_Volume: 0.5
+  m_Volume: 0.4
   m_Pitch: 1
   Loop: 0
   Mute: 0
