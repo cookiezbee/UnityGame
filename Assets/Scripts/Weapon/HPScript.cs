@@ -51,6 +51,11 @@ public class HPScript : MonoBehaviour
 
         isDead = true;
         OnDeath?.Invoke();
+
+        PlayerAttack attackScript = GetComponent<PlayerAttack>();
+        Flashlight flashlight = GetComponent<Flashlight>();
+        if (attackScript != null) attackScript.enabled = false;
+        if (flashlight != null) flashlight.enabled = false;
     }
 
     public void Heal(int amount)
