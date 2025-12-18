@@ -1254,6 +1254,7 @@ MonoBehaviour:
   eyeHeight: 1.2
   scanInterval: 0.1
   flashlightRadiusMultiplier: 2
+  ignoreUntilPlayerMoves: 1
 --- !u!114 &7452455057894856957
 MonoBehaviour:
   m_ObjectHideFlags: 0

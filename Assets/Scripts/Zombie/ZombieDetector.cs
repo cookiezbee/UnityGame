@@ -15,21 +15,32 @@ public class ZombieDetector : MonoBehaviour
     [Header("Update")]
     [SerializeField][Range(0.05f, 1f)] private float scanInterval = 0.1f;
 
-	[Header("Flashlight")]
+    [Header("Flashlight")]
     [SerializeField][Range(1f, 5f)] private float flashlightRadiusMultiplier = 2f;
-    
+
+    [Header("Ignore player until movement")]
+    [SerializeField] private bool ignoreUntilPlayerMoves = true;
+
     private float baseDetectionRadius;
-    
+
     private Vector3 lastPlayerPosition;
     private bool playerDetected;
     private Transform playerTransform;
+
     public bool PlayerDetected => playerDetected;
     public Vector3 LastPlayerPosition => lastPlayerPosition;
     public Transform PlayerTransform => playerTransform;
 
+    // чтобы не дергать IgnoreCollision каждый кадр
+    private static bool collisionsIgnored = false;
+    private static Transform cachedPlayerForCollision = null;
+
+    private WaitForSeconds wait;
+
     private void Start()
     {
         baseDetectionRadius = detectionRadius;
+        wait = new WaitForSeconds(scanInterval);
         StartCoroutine(DetectLoop());
     }
 
@@ -37,14 +48,46 @@ public class ZombieDetector : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(scanInterval);
+            yield return wait;
+
+            // Если игрок уже начал движение, но коллизии еще выключены — вернем их,
+            // даже если сейчас игрок не попал в OverlapSphere.
+            if (ignoreUntilPlayerMoves && PlayerMovement.PlayerHasMoved && collisionsIgnored)
+            {
+                SetCollisionIgnored(cachedPlayerForCollision, false);
+                collisionsIgnored = false;
+                cachedPlayerForCollision = null;
+            }
 
             Collider[] hits = Physics.OverlapSphere(transform.position, detectionRadius, playerLayer);
 
             if (hits != null && hits.Length > 0)
             {
-                // берем первого найденного игрока
                 Transform candidate = hits[0].transform;
+
+                // пока игрок не начал движение — игнорируем полностью + проходим сквозь него
+                if (ignoreUntilPlayerMoves && !PlayerMovement.PlayerHasMoved)
+                {
+                    if (!collisionsIgnored)
+                    {
+                        cachedPlayerForCollision = candidate;
+                        SetCollisionIgnored(candidate, true);
+                        collisionsIgnored = true;
+                    }
+
+                    playerDetected = false;
+                    playerTransform = null;
+                    continue;
+                }
+
+                // игрок начал движение -> коллизии уже будут возвращены в начале цикла,
+                // но на всякий случай дублируем защиту если candidate совпал
+                if (ignoreUntilPlayerMoves && PlayerMovement.PlayerHasMoved && collisionsIgnored)
+                {
+                    SetCollisionIgnored(candidate, false);
+                    collisionsIgnored = false;
+                    cachedPlayerForCollision = null;
+                }
 
                 if (!useLineOfSight || HasLineOfSight(candidate))
                 {
@@ -64,7 +107,6 @@ public class ZombieDetector : MonoBehaviour
     {
         Vector3 from = transform.position + Vector3.up * eyeHeight;
 
-        // целимся примерно в центр цели (если есть коллайдер - берем его bounds)
         Vector3 to = target.position;
         Collider c = target.GetComponentInChildren<Collider>();
         if (c != null) to = c.bounds.center;
@@ -75,7 +117,6 @@ public class ZombieDetector : MonoBehaviour
 
         dir /= dist;
 
-        // если между нами и игроком есть препятствие - LOS нет
         if (Physics.Raycast(from, dir, dist, obstacleLayer))
             return false;
 
@@ -88,13 +129,30 @@ public class ZombieDetector : MonoBehaviour
         Gizmos.DrawWireSphere(transform.position, detectionRadius);
     }
 #endif
-    
+
     public void SetFlashlightState(bool enabled)
     {
         detectionRadius = enabled
             ? baseDetectionRadius * flashlightRadiusMultiplier
             : baseDetectionRadius;
-        
-        // Debug.Log($"{name}: flashlight={enabled}, detectionRadius={detectionRadius}");
+    }
+
+    private void SetCollisionIgnored(Transform player, bool ignored)
+    {
+        if (player == null) return;
+
+        Collider[] zombieCols = GetComponentsInParent<Collider>(true);
+        Collider[] playerCols = player.GetComponentsInParent<Collider>(true);
+
+        for (int i = 0; i < zombieCols.Length; i++)
+        {
+            if (zombieCols[i] == null) continue;
+
+            for (int j = 0; j < playerCols.Length; j++)
+            {
+                if (playerCols[j] == null) continue;
+                Physics.IgnoreCollision(zombieCols[i], playerCols[j], ignored);
+            }
+        }
     }
 }

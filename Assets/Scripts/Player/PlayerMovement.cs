@@ -19,8 +19,12 @@ public class PlayerMovement : MonoBehaviour
 
     private float lastFootstepTime = 0f;
 
+    public static bool PlayerHasMoved { get; private set; } = false;
+    
     private void Start()
     {
+        PlayerHasMoved = false; // сброс при спавне игрока
+        
         if (footstepSource == null) footstepSource = GetComponent<AudioSource>();
     }
 
@@ -28,6 +32,9 @@ public class PlayerMovement : MonoBehaviour
     {
         Vector2 movementVector = movementValue.Get<Vector2>();
         direction = new Vector3(movementVector.x, 0, movementVector.y).normalized;
+        
+        if (direction.sqrMagnitude > 0.01f)
+            PlayerHasMoved = true;
     }
 
     private void LateUpdate()
