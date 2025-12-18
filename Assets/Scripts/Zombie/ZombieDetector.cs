@@ -18,9 +18,6 @@ public class ZombieDetector : MonoBehaviour
     [Header("Flashlight")]
     [SerializeField][Range(1f, 5f)] private float flashlightRadiusMultiplier = 2f;
 
-    [Header("Ignore player until movement")]
-    [SerializeField] private bool ignoreUntilPlayerMoves = true;
-
     private float baseDetectionRadius;
 
     private Vector3 lastPlayerPosition;
@@ -50,44 +47,11 @@ public class ZombieDetector : MonoBehaviour
         {
             yield return wait;
 
-            // Если игрок уже начал движение, но коллизии еще выключены — вернем их,
-            // даже если сейчас игрок не попал в OverlapSphere.
-            if (ignoreUntilPlayerMoves && PlayerMovement.PlayerHasMoved && collisionsIgnored)
-            {
-                SetCollisionIgnored(cachedPlayerForCollision, false);
-                collisionsIgnored = false;
-                cachedPlayerForCollision = null;
-            }
-
             Collider[] hits = Physics.OverlapSphere(transform.position, detectionRadius, playerLayer);
 
             if (hits != null && hits.Length > 0)
             {
                 Transform candidate = hits[0].transform;
-
-                // пока игрок не начал движение — игнорируем полностью + проходим сквозь него
-                if (ignoreUntilPlayerMoves && !PlayerMovement.PlayerHasMoved)
-                {
-                    if (!collisionsIgnored)
-                    {
-                        cachedPlayerForCollision = candidate;
-                        SetCollisionIgnored(candidate, true);
-                        collisionsIgnored = true;
-                    }
-
-                    playerDetected = false;
-                    playerTransform = null;
-                    continue;
-                }
-
-                // игрок начал движение -> коллизии уже будут возвращены в начале цикла,
-                // но на всякий случай дублируем защиту если candidate совпал
-                if (ignoreUntilPlayerMoves && PlayerMovement.PlayerHasMoved && collisionsIgnored)
-                {
-                    SetCollisionIgnored(candidate, false);
-                    collisionsIgnored = false;
-                    cachedPlayerForCollision = null;
-                }
 
                 if (!useLineOfSight || HasLineOfSight(candidate))
                 {
