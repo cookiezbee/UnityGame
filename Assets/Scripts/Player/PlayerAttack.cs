@@ -29,7 +29,7 @@ public class PlayerAttack : MonoBehaviour
 
     void Update()
     {
-        if (DialogueController.IsDialogueActive) return;
+        if (DialogueController.IsDialogueActive || !PlayerMovement.PlayerHasMoved) return;
 
         float scroll = Input.GetAxis("Mouse ScrollWheel");
 

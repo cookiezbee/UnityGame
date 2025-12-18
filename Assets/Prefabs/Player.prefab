@@ -448,7 +448,7 @@ Transform:
   m_GameObject: {fileID: 2610446103361850811}
   serializedVersion: 2
   m_LocalRotation: {x: 0.000000014901163, y: -0.00000001676381, z: 2.4980026e-16, w: 1}
-  m_LocalPosition: {x: -0.141, y: 0, z: 0.184}
+  m_LocalPosition: {x: -0.116, y: 0.026, z: 0.1}
   m_LocalScale: {x: 0.9999999, y: 0.99999994, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -749,7 +749,7 @@ MonoBehaviour:
   attackRate: 1
   nextAttackTime: 0
   attackRange: 2
-  hitDelay: 0.4
+  hitDelay: 0.2
   attackPoint: {fileID: 5200196888700182343}
   meleeAudioSource: {fileID: 9196099278690432140}
   swingSound: {fileID: 8300000, guid: 5dce39a022624c9449c6f2fb8ed9ac6a, type: 3}
@@ -1149,7 +1149,7 @@ Transform:
   m_GameObject: {fileID: 4662714441436585173}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.304, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

@@ -98,7 +98,9 @@ public class ZombiePatrol : MonoBehaviour
         // анимация движения
         float speed = new Vector3(agent.velocity.x, 0f, agent.velocity.z).magnitude;
         if (animator != null)
+        {
             animator.SetFloat(SpeedHash, speed);
+        }
 
         bool isChasingNow = detector != null && detector.PlayerDetected && detector.PlayerTransform != null;
 
@@ -111,6 +113,12 @@ public class ZombiePatrol : MonoBehaviour
             }
         }
         wasChasing = isChasingNow;
+
+        bool isHitAnimationPlaying = false;
+        if (animator != null)
+        {
+            if (animator.GetCurrentAnimatorStateInfo(1).IsName("Hit")) isHitAnimationPlaying = true;
+        }
 
         // погоня / атака
         if (isChasingNow)
@@ -134,11 +142,9 @@ public class ZombiePatrol : MonoBehaviour
                     transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, rotationSpeed * Time.deltaTime);
                 }
 
-                if (attackTimer >= attackCooldown)
+                if (!isHitAnimationPlaying && attackTimer >= attackCooldown)
                 {
                     if (animator != null) animator.SetTrigger(AttackHash);
-
-                    // Сбрасываем таймер. Урон нанесется ЧЕРЕЗ Animation Event
                     attackTimer = 0f;
                 }
 
