@@ -752,7 +752,7 @@ MonoBehaviour:
   hitDelay: 0.2
   attackPoint: {fileID: 5200196888700182343}
   meleeAudioSource: {fileID: 9196099278690432140}
-  swingSound: {fileID: 8300000, guid: 5dce39a022624c9449c6f2fb8ed9ac6a, type: 3}
+  swingSound: {fileID: 8300000, guid: 7e892369700c0624aa14e87a1ebb24bc, type: 3}
 --- !u!114 &5565447703526835995
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2347,8 +2347,8 @@ MonoBehaviour:
           m_BoolArgument: 0
         m_CallState: 2
   audioSource: {fileID: 291228196967309957}
-  damageSound: {fileID: 8300000, guid: 90d91b0e2624f874fb065feb07989bf5, type: 3}
-  deathSound: {fileID: 8300000, guid: 3a8f76050c2989f42b79c694205b0775, type: 3}
+  damageSound: {fileID: 8300000, guid: 845e56114baa577469843d12bbf46503, type: 3}
+  deathSound: {fileID: 8300000, guid: 50de877a1b2136f4c9f62899b39690fa, type: 3}
 --- !u!114 &7755668754139752042
 MonoBehaviour:
   m_ObjectHideFlags: 0

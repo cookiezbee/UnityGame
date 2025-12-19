@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 2547327378244363256}
   - component: {fileID: 7946435765091222515}
   m_Layer: 0
-  m_Name: NPC
+  m_Name: ZombieHunter
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -116,7 +116,7 @@ MonoBehaviour:
   lookRange: 5
   turnSpeed: 5
   audioSource: {fileID: 7946435765091222515}
-  greetingSound: {fileID: 8300000, guid: 1204f269124a6c74a961d9065b3fdaaf, type: 3}
+  greetingSound: {fileID: 8300000, guid: 405b16770186747499b89ac26f82651a, type: 3}
   obstacleLayer:
     serializedVersion: 2
     m_Bits: 64

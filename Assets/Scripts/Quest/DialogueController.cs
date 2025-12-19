@@ -62,7 +62,7 @@ public class DialogueController : MonoBehaviour
 
         if (currentNPC == "KeyGiver")
         {
-            if (npcNameText) npcNameText.text = "Смотритель";
+            if (npcNameText) npcNameText.text = "Смотрительница";
             ShowKeyGiverDialogue();
         }
         else if (currentNPC == "ZombieGiver")
@@ -111,7 +111,7 @@ public class DialogueController : MonoBehaviour
         {
             if (dialogueStep == 0)
             {
-                dialogueText.text = "Помоги! Я потерял ключ в этом проклятом лабиринте!";
+                dialogueText.text = "Помоги! Я потеряла ключ в этом проклятом лабиринте!";
                 canAdvance = true;
             }
             else if (dialogueStep == 1)
@@ -121,7 +121,7 @@ public class DialogueController : MonoBehaviour
             }
             else if (dialogueStep == 2)
             {
-                dialogueText.text = "Если найдешь - я тебе очень буду благодарен!";
+                dialogueText.text = "Если найдешь - я тебе буду очень благодарна!";
 
                 QuestManager.Instance.keyQuestStarted = true;
                 if (KeySpawner.Instance != null) KeySpawner.Instance.SpawnKey();

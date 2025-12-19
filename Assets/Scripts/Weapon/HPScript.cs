@@ -32,13 +32,13 @@ public class HPScript : MonoBehaviour
 
         if (currentHP < 0) currentHP = 0;
 
-        OnHPChanged?.Invoke(currentHP);
-
         if (currentHP > 0 && audioSource != null && damageSound != null)
         {
             audioSource.pitch = Random.Range(0.9f, 1.1f);
             audioSource.PlayOneShot(damageSound, 0.6f);
         }
+
+        OnHPChanged?.Invoke(currentHP);
 
         if (currentHP <= 0) Die();
     }
